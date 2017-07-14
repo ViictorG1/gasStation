@@ -1,0 +1,75 @@
+<ion-content padding class="sample-modal-page">
+  <ion-grid text-center padding-top class="gridText">
+    <ion-row>
+      <ion-col col-12>
+        <span class="title-gas">{{ gasStation.name | uppercase }}</span><br/>
+        <span class="location-gas">{{ gasStation.location }}</span>
+      </ion-col>
+    </ion-row>
+    <ion-row class="values">
+      <ion-col col-6 text-center>
+        <span class="price">
+          <b>
+            <span class="rs">R$</span>
+            {{ gasStation.comum }}
+          </b>
+        </span>
+      </ion-col>
+      <ion-col col-6 text-center>
+        <span class="price">
+          <b>
+            <span class="rs">R$</span>
+            {{ gasStation.aditivada }}
+          </b>
+        </span>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col col-6 text-center>
+        Gasolina comum
+      </ion-col>
+      <ion-col col-6 text-center>
+        Gasolina aditivada
+      </ion-col>
+    </ion-row>
+    <ion-row class="values">
+      <ion-col col-6 text-center>
+        <span class="price">
+          <b>
+            <span class="rs">R$</span>
+            {{ gasStation.alcool }}
+          </b>
+        </span>
+      </ion-col>
+      <ion-col col-6 text-center>
+        <span class="price">
+          <b>
+            <span class="rs">R$</span>
+            {{ gasStation.diesel }}
+          </b>
+        </span>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col col-6 text-center>
+        Gasolina álcool
+      </ion-col>
+      <ion-col col-6 text-center>
+        Gasolina diesel
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-grid class="footer-pop">
+    <ion-buttons right>
+      <button ion-button color="light" clear icon-only>
+        <ion-icon name="information-circle" is-active="false"></ion-icon>
+      </button>
+      <button ion-button color="light" clear icon-only>
+        <ion-icon name="share" is-active="false"></ion-icon>
+      </button>
+      <button ion-button color="light" clear icon-only>
+        <ion-icon name="arrow-dropright-circle" is-active="false"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-grid>
+</ion-content>

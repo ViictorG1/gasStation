@@ -1,23 +1,29 @@
 <ion-header>
-  <ion-navbar>
-    <button ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </button>
-    <ion-title>List</ion-title>
+  <ion-navbar color="primary">
+    <ion-title>LISTA</ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only>
+        <ion-icon name="search"></ion-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
 
 <ion-content>
   <ion-list>
-    <button ion-item *ngFor="let item of items" (click)="itemTapped($event, item)">
-      <ion-icon [name]="item.icon" item-left></ion-icon>
-      {{item.title}}
-      <div class="item-note" item-right>
-        {{item.note}}
-      </div>
-    </button>
+    <ion-item ion-item *ngFor="let gasStation of gasStationsList" (click)="openGasStation(gasStation)">
+      <ion-avatar item-start>
+        <img src="{{ gasStation.icon }}">
+      </ion-avatar>
+      <h3><b>{{ gasStation.name | uppercase }}</b></h3>
+      <p>{{ gasStation.location }}</p>
+      <span item-end text-center>
+        <h2><b><span class="rs">R$</span>{{ gasStation.comum }}</b></h2>
+        <p>{{ gasStation.distance }}</p>
+      </span>
+    </ion-item>
   </ion-list>
-  <div *ngIf="selectedItem" padding>
-    You navigated here from <b>{{selectedItem.title}}</b>
-  </div>
+  <!--<button (click)="presentContactModal()">VAI</button>-->
 </ion-content>
+
+<ion-nav id="nav" #content [root]="rootPage"></ion-nav>

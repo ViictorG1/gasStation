@@ -1,0 +1,72 @@
+.price {
+  font-size: 2.5em;
+}
+
+.rs {
+  font-size: 0.5em;
+}
+
+.values {
+  padding-top: 30px;
+}
+
+ion-modal {
+  ion-content {
+      &.content {
+          div.scroll-content {
+              top: 10%;
+              left: 10%;
+              width: 80%;
+              height: 80%;
+              overflow:hidden;
+              box-shadow: 3px 5px 3px #989898;
+              padding: 0px !important;
+          }
+      }
+
+      &.content-ios {
+          background-color: rgba(0, 0, 0, 0.3);
+
+          div.scroll-content {
+              background-color: #f8f8f8;
+              border-radius: 13px;
+          }
+      }
+
+      &.content-md {
+          background-color: rgba(0, 0, 0, 0.5);
+          
+          div.scroll-content {
+              background-color: #fafafa;
+              border-radius: 2px;
+              box-shadow: 0 16px 20px rgba(0, 0, 0, 0.4);
+          }
+      }
+  }
+}
+
+.title-gas {
+  font-size: 22px;
+  font-weight: bold;
+  color: #272727;
+}
+
+.location-gas {
+  color: #272727;
+}
+
+.gridText {
+  overflow:scroll;
+  max-height: 80%;
+  padding-bottom: 20px;
+}
+
+.footer-pop {
+  background-color: #488AFF;
+  height: 12%;
+  margin-top: 20px;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
