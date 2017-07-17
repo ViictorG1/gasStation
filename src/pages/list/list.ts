@@ -1,5 +1,5 @@
-import { Component, ViewChild } from '@angular/core';
-import { NavController, NavParams, Nav, ModalController } from 'ionic-angular';
+import { Component, ViewChild, ElementRef } from '@angular/core';
+import { NavController, NavParams, Nav, ModalController, LoadingController } from 'ionic-angular';
 
 import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/database';
 
@@ -8,6 +8,8 @@ import { HomePage } from '../home/home';
 import { LatLng } from '@ionic-native/google-maps';
 import { Geolocation } from '@ionic-native/geolocation';
 
+declare var google;
+
 @Component({
   selector: 'page-list',
   templateUrl: 'list.html',
@@ -15,20 +17,24 @@ import { Geolocation } from '@ionic-native/geolocation';
 export class ListPage {
   @ViewChild(Nav) nav: Nav;
 
+  map: any;
   gasStations: FirebaseListObservable<any[]>;
   gasStationsList: any[] = [];
   gasStation: any;  
   latlngUser: any;
+  directionsService = new google.maps.DirectionsService;
 
   constructor(
     public navCtrl: NavController,
     public modalCtrl: ModalController,
     public navParams: NavParams,
+    public loading: LoadingController,
     public geolocation: Geolocation,
     public af: AngularFireDatabase
   ) {
-    this.gasStations = af.list('/gasStations');
-    this.getCurrentLocation();    
+    this.presentLoadingDefault();
+    this.gasStations = this.af.list('/gasStations');    
+    this.getCurrentLocation();
   }
 
   openGasStation(gasStation: any) {
@@ -56,40 +62,42 @@ export class ListPage {
     });
   }
 
-  getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
-    var R = 6371; // Radius of the earth in km
-    var dLat = this.deg2rad(lat2-lat1);  // deg2rad below
-    var dLon = this.deg2rad(lon2-lon1); 
-    var a = 
-      Math.sin(dLat/2) * Math.sin(dLat/2) +
-      Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) * 
-      Math.sin(dLon/2) * Math.sin(dLon/2)
-      ; 
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-    var d = R * c; // Distance in km
-    return d;
-  }
-
-  deg2rad(deg) {
-    return deg * (Math.PI/180)
-  }
-
   calculateDistances(latlngUser: any) {
     this.gasStations.subscribe((gasStations: any) => {
       gasStations.forEach((gasStation: any) => {
-        let calcDistance = 
-        let resultDistance = this.getDistanceFromLatLonInKm(latlngUser.lat, latlngUser.lng, gasStation.latitude, gasStation.longitude);
-        
-        if (resultDistance >= 0 && resultDistance <= 1) {
-          resultDistance = resultDistance * 1000;
-          resultDistance = Math.trunc(resultDistance);
-          gasStation.distance = `${resultDistance}m`;
-        } else {
-          gasStation.distance = `${resultDistance.toFixed(2)}km`;
-        }
-
-        this.gasStationsList.push(gasStation);
+        this.calculateRoute(latlngUser, gasStation);
       });
     });
+  }
+
+  calculateRoute(latlngUser: any, gasStation: any) {
+    this.directionsService.route({
+      origin: latlngUser,
+      destination: new LatLng(gasStation.latitude, gasStation.longitude),
+      travelMode: 'DRIVING'
+    }, (response, status) => {
+      gasStation.distance = response.routes[0].legs[0].distance.value;
+
+      if (gasStation.distance >= 1000) {
+        gasStation.distance = gasStation.distance / 1000;
+        gasStation.distance = `${gasStation.distance.toFixed(1)}km`
+      } else {
+        gasStation.distance = `${gasStation.distance}m`;
+      }
+
+      this.gasStationsList.push(gasStation);      
+    });
+  }
+
+  presentLoadingDefault() {
+    let loading = this.loading.create({
+      content: 'Carregando postos'
+    });
+
+    loading.present();
+    this.gasStations = this.af.list('/gasStations');
+    setTimeout(() => {
+      loading.dismiss();
+    }, 4000);
   }
 }
