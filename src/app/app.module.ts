@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
+import { LaunchNavigator } from '@ionic-native/launch-navigator';
 
 import { AngularFireModule } from 'angularfire2';
 
@@ -51,6 +52,7 @@ export const firebaseConfig = {
     StatusBar,
     SplashScreen,
     GoogleMaps,
+    LaunchNavigator,
     Geolocation,    
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]

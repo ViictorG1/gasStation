@@ -1,11 +1,11 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
 import { NavController, NavParams, ModalController } from 'ionic-angular';
+import { Component, ViewChild, ElementRef } from '@angular/core';
+
+import { LatLng } from '@ionic-native/google-maps';
+import { Geolocation } from '@ionic-native/geolocation';
 
 import { ListPage } from '../list/list';
 import { GasStationPage } from '../gas-station/gas-station';
-
-import { GoogleMaps, GoogleMap, GoogleMapsEvent, LatLng, CameraPosition, MarkerOptions, Marker } from '@ionic-native/google-maps';
-import { Geolocation } from '@ionic-native/geolocation';
 
 declare var google;
 
@@ -38,9 +38,9 @@ export class HomePage {
     ),
     end: new google.maps.MarkerImage(
     // URL
-    'http://i.imgur.com/V2gduDr.png',
+    'http://i.imgur.com/9PHIQRA.png',
     // (width,height)
-    new google.maps.Size( 100, 100 ),
+    new google.maps.Size( 80, 80 ),
     // The origin point (x,y)
     new google.maps.Point( 0, 0 ),
     // The anchor point (x,y)
@@ -52,8 +52,7 @@ export class HomePage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public modalCtrl: ModalController,
-    public geolocation: Geolocation,
-    private googleMaps: GoogleMaps    
+    public geolocation: Geolocation
   ) {
     this.getMap();
   }
@@ -75,8 +74,8 @@ export class HomePage {
     this.directionsDisplay.setMap(this.map);
     this.directionsDisplay.setOptions({
       polylineOptions: {
-        strokeWeight: 4,
-        strokeOpacity: 0.5,
+        strokeWeight: 3,
+        strokeOpacity: 0.9,
         strokeColor: '#488AFF'
       }
     , suppressMarkers: true });
@@ -87,83 +86,13 @@ export class HomePage {
         this.latilong = this.latlngUser;
       }
 
-    this.calculateAndDisplayRoute();
-
-    // let element = document.getElementById('map');
-    // let map: GoogleMap = this.googleMaps.create(element);
-
-    // map.one(GoogleMapsEvent.MAP_READY).then(() => {
-    //   if (this.gasStation) {
-    //     this.latilong = new LatLng(parseFloat(this.gasStation.latitude), parseFloat(this.gasStation.longitude));
-    //   } else {
-    //     this.latilong = this.latlngUser;
-    //   }
-
-    //   if (this.gasStation) {
-    //     let position: CameraPosition = {
-    //       target: this.latilong,
-    //       zoom: 15,
-    //       tilt: 30,
-    //       duration: 500
-    //     }
-
-    //     map.moveCamera(position);
-
-    //     let markerOptionsUser: MarkerOptions = {
-    //       position: this.latlngUser
-    //     };
-
-    //     const markerUser = map.addMarker(markerOptionsUser)
-    //       .then((marker: Marker) => {
-    //           marker.showInfoWindow();
-    //         });
-
-    //     let markerOptionsGas: MarkerOptions = {
-    //       position: this.latilong
-    //     };
-
-    //     map.on(GoogleMapsEvent.MARKER_CLICK)
-    //       .subscribe(() => {
-    //         this.addInfoWindow();
-    //       });
-
-    //     const marker = map.addMarker(markerOptionsGas)
-    //       .then((marker: Marker) => {
-    //           marker.addEventListener(GoogleMapsEvent.MARKER_CLICK)
-    //             .subscribe(() => {
-    //               this.addInfoWindow();
-    //             });
-    //         });
-
-    //     this.calculateAndDisplayRoute();
-      
-    //   } else {
-    //     let position: CameraPosition = {
-    //       target: this.latilong,
-    //       zoom: 20,
-    //       tilt: 30,
-    //       duration: 500
-    //     }
-
-    //     map.moveCamera(position);
-
-    //     let markerOptionsUser: MarkerOptions = {
-    //       position: this.latlngUser,
-    //       title: 'Você'
-    //     };
-
-    //     const markerUser = map.addMarker(markerOptionsUser)
-    //       .then((marker: Marker) => {              
-    //           marker.showInfoWindow();
-    //         });
-    //   }
-    // });
-  
+    this.calculateAndDisplayRoute();  
   }
 
   addInfoWindow() {
     let gasStationModal = this.modalCtrl.create(GasStationPage, {
-      gasStation: this.gasStation
+      gasStation: this.gasStation,
+      latlngUser: this.latlngUser
     });
     gasStationModal.present();
   }
