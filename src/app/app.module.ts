@@ -2,8 +2,11 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { LaunchNavigator } from '@ionic-native/launch-navigator';
+import { IonicStorageModule } from '@ionic/storage';
 
 import { AngularFireModule } from 'angularfire2';
+
+import { FirebaseService } from '../pages/firebase.service';
 
 import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { AngularFireAuthModule } from 'angularfire2/auth';
@@ -39,7 +42,8 @@ export const firebaseConfig = {
     IonicModule.forRoot(MyApp),
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFireDatabaseModule,
-    AngularFireAuthModule
+    AngularFireAuthModule,
+    IonicStorageModule.forRoot()
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -53,6 +57,7 @@ export const firebaseConfig = {
     SplashScreen,
     GoogleMaps,
     LaunchNavigator,
+    FirebaseService,
     Geolocation,    
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]

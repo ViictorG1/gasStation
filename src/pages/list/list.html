@@ -19,11 +19,10 @@
       <p>{{ gasStation.location }}</p>
       <span item-end text-center>
         <h2><b><span class="rs">R$</span>{{ gasStation.comum }}</b></h2>
-        <p>{{ gasStation.distance }}</p>
+        <span *ngIf="!gasStation.distance" class="loading-24"></span><span>{{ gasStation.distance }}</span>
       </span>
     </ion-item>
   </ion-list>
-  <!--<button (click)="presentContactModal()">VAI</button>-->
 </ion-content>
 
 <ion-nav id="nav" #content [root]="rootPage"></ion-nav>

@@ -1,4 +1,4 @@
-import { NavController, NavParams, ModalController } from 'ionic-angular';
+import { NavController, NavParams, ModalController, LoadingController } from 'ionic-angular';
 import { Component, ViewChild, ElementRef } from '@angular/core';
 
 import { LatLng } from '@ionic-native/google-maps';
@@ -21,6 +21,7 @@ export class HomePage {
   latlngUser: any;
   latilong: any;
   listPage = { title: 'List', component: ListPage };
+  loading: any;
   gasStation: any;
   backIsHide: boolean = false;
   directionsService = new google.maps.DirectionsService;
@@ -52,8 +53,10 @@ export class HomePage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public modalCtrl: ModalController,
+    public loadingCtrl: LoadingController,
     public geolocation: Geolocation
   ) {
+    this.presentLoadingDefault();
     this.getMap();
   }
 
@@ -70,7 +73,7 @@ export class HomePage {
       center: this.latlngUser,
       scrollwheel: false
     });
-
+    
     this.directionsDisplay.setMap(this.map);
     this.directionsDisplay.setOptions({
       polylineOptions: {
@@ -86,7 +89,9 @@ export class HomePage {
         this.latilong = this.latlngUser;
       }
 
-    this.calculateAndDisplayRoute();  
+    this.loading.dismiss();
+    
+    this.calculateAndDisplayRoute();
   }
 
   addInfoWindow() {
@@ -137,6 +142,14 @@ export class HomePage {
     }).catch((error) => {
       console.log('Error getting location', error);
     });
+  }
+
+  presentLoadingDefault() {
+    this.loading = this.loadingCtrl.create({
+      content: 'Carregando mapa'
+    });
+
+    this.loading.present();
   }
 
 }

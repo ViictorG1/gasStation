@@ -1,8 +1,8 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { NavController, NavParams, Nav, ModalController, LoadingController } from 'ionic-angular';
+import { Storage } from '@ionic/storage';
 
-import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/database';
-
+import { FirebaseService } from '../firebase.service';
 import { HomePage } from '../home/home';
 
 import { LatLng } from '@ionic-native/google-maps';
@@ -17,10 +17,11 @@ declare var google;
 export class ListPage {
   @ViewChild(Nav) nav: Nav;
 
+  change: any;
   map: any;
-  gasStations: FirebaseListObservable<any[]>;
   gasStationsList: any[] = [];
-  gasStation: any;  
+  loading: any;
+  gasStation: any;
   latlngUser: any;
   directionsService = new google.maps.DirectionsService;
 
@@ -28,13 +29,12 @@ export class ListPage {
     public navCtrl: NavController,
     public modalCtrl: ModalController,
     public navParams: NavParams,
-    public loading: LoadingController,
+    public loadingCtrl: LoadingController,
     public geolocation: Geolocation,
-    public af: AngularFireDatabase
+    private firebaseService: FirebaseService,
+    private storage: Storage
   ) {
     this.presentLoadingDefault();
-    this.gasStations = this.af.list('/gasStations');    
-    this.getCurrentLocation();
   }
 
   openGasStation(gasStation: any) {
@@ -46,13 +46,6 @@ export class ListPage {
     });
   }
 
-  // presentContactModal(gasStation: any) {
-  //   let contactModal = this.modalCtrl.create(GasStationPage, {
-  //     gasStation: this.gasStation
-  //   });
-  //   contactModal.present();
-  // }   
-
   getCurrentLocation() {
     this.geolocation.getCurrentPosition({ enableHighAccuracy: true, timeout: 5000 }).then((resp) => {
       let latlngUser = new LatLng(resp.coords.latitude, resp.coords.longitude);
@@ -63,10 +56,8 @@ export class ListPage {
   }
 
   calculateDistances(latlngUser: any) {
-    this.gasStations.subscribe((gasStations: any) => {
-      gasStations.forEach((gasStation: any) => {
-        this.calculateRoute(latlngUser, gasStation);
-      });
+    this.gasStationsList.forEach((gasStation: any) => {
+      this.calculateRoute(latlngUser, gasStation);
     });
   }
 
@@ -80,24 +71,70 @@ export class ListPage {
 
       if (gasStation.distance >= 1000) {
         gasStation.distance = gasStation.distance / 1000;
-        gasStation.distance = `${gasStation.distance.toFixed(1)}km`
+        gasStation.distance = `${gasStation.distance.toFixed(1)}km`;
       } else {
         gasStation.distance = `${gasStation.distance}m`;
-      }
-
-      this.gasStationsList.push(gasStation);      
+      }    
     });
   }
 
   presentLoadingDefault() {
-    let loading = this.loading.create({
+    this.loading = this.loadingCtrl.create({
       content: 'Carregando postos'
     });
 
-    loading.present();
-    this.gasStations = this.af.list('/gasStations');
-    setTimeout(() => {
-      loading.dismiss();
-    }, 4000);
+    this.checkChanges();    
+
+    this.loading.present();
+    
+    let lengthData: number;
+    this.storage.length().then((length: number) => {
+      lengthData = length;
+      this.loadData(lengthData);
+    })
+
+    this.loading.dismiss();
   }
+
+  loadData(lengthData) {
+    if (lengthData <= 0) {
+      this.loadGasStations();
+    } else {
+      this.storage.get('gasStations').then((data: any) => {
+        this.gasStationsList = data;
+      });
+    }
+
+    this.getCurrentLocation();
+  }
+
+  checkChanges() {    
+    let changes = this.firebaseService.getChanges();
+    changes.subscribe((changesAux: any) => {
+      changesAux.forEach((dataChange: any) => {
+        if (dataChange.value) {
+          this.change = dataChange;
+          this.onChangeAccept();
+        }
+      });
+    });
+  }
+
+  onChangeAccept() {
+    this.loadGasStations();
+    this.firebaseService.setChangeToFalse(this.change.data);
+    this.change.value = false;
+    this.change.data = "";
+  }
+
+  loadGasStations() {
+    let gasStations = this.firebaseService.getGasStationsList();
+    gasStations.subscribe((gasStations: any) => {
+      this.gasStationsList = gasStations;
+      this.storage.set('gasStations', this.gasStationsList);
+    });
+
+    this.getCurrentLocation();
+  }
+
 }
