@@ -3,7 +3,7 @@
     <ion-title>LISTA</ion-title>
     <ion-buttons end>
       <button ion-button icon-only>
-        <ion-icon name="search"></ion-icon>
+        <ion-icon name="funnel"></ion-icon>
       </button>
     </ion-buttons>
   </ion-navbar>
@@ -12,15 +12,41 @@
 <ion-content>
   <ion-list>
     <ion-item ion-item *ngFor="let gasStation of gasStationsList" (click)="openGasStation(gasStation)">
-      <ion-avatar item-start>
+      <table class="w-100">
+        <tr>
+          <td class="w-5 colors-gas">
+            <table class="w-50 h-100">
+              <tr *ngIf="gasStation.type==='Ipiranga'" class="ipiranga-1 w-100 h-50"><td></td></tr>
+              <tr *ngIf="gasStation.type==='Ipiranga'" class="ipiranga-2 w-100 h-50"><td></td></tr>
+              <tr *ngIf="gasStation.type==='Shell'" class="shell-1 w-100 h-50"><td></td></tr>
+              <tr *ngIf="gasStation.type==='Shell'" class="shell-2 w-100 h-50"><td></td></tr>
+              <tr *ngIf="gasStation.type==='BR'" class="br-1 w-100 h-50"><td></td></tr>
+              <tr *ngIf="gasStation.type==='BR'" class="br-2 w-100 h-50"><td></td></tr>
+            </table>
+          </td>
+          <td class="w-80 text-gas">
+            <h3><b>{{ gasStation.name | uppercase }}</b></h3>
+            <p>{{ gasStation.location }}</p>
+          </td>
+          <td class="w-10">
+            <table class="pull-right text-center">
+              <tr>
+                <td>
+                  <h2><b><span class="rs">R$</span>{{ gasStation.comum }}</b></h2>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <span *ngIf="!gasStation.distance" class="loading-24"></span><span>{{ gasStation.distance }}</span>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+      <!--<ion-avatar item-start>
         <img src="{{ gasStation.icon }}">
-      </ion-avatar>
-      <h3><b>{{ gasStation.name | uppercase }}</b></h3>
-      <p>{{ gasStation.location }}</p>
-      <span item-end text-center>
-        <h2><b><span class="rs">R$</span>{{ gasStation.comum }}</b></h2>
-        <span *ngIf="!gasStation.distance" class="loading-24"></span><span>{{ gasStation.distance }}</span>
-      </span>
+      </ion-avatar>-->
     </ion-item>
   </ion-list>
 </ion-content>
