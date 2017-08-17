@@ -39,13 +39,13 @@ export class HomePage {
     ),
     end: new google.maps.MarkerImage(
     // URL
-    'http://i.imgur.com/9PHIQRA.png',
+    'http://i.imgur.com/svzzuiv.png',
     // (width,height)
-    new google.maps.Size( 80, 80 ),
+    new google.maps.Size( 48, 48 ),
     // The origin point (x,y)
     new google.maps.Point( 0, 0 ),
     // The anchor point (x,y)
-    new google.maps.Point( 22, 32 )
+    new google.maps.Point( 25, 40 )
     )
   };
 
