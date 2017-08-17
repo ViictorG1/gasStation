@@ -29,7 +29,7 @@ export class HomePage {
   icons = {
     start: new google.maps.MarkerImage(
     // URL
-    '../../assets/images/vol.png',
+    'assets/images/vol.png',
     // (width,height)
     new google.maps.Size( 48, 48 ),
     // The origin point (x,y)

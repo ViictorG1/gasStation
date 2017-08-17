@@ -15,7 +15,7 @@
       <table class="w-100">
         <tr>
           <td class="w-5 colors-gas">
-            <table class="w-50 h-100">
+            <table class="w-80 h-100">
               <tr *ngIf="gasStation.type==='Ipiranga'" class="ipiranga-1 w-100 h-50"><td></td></tr>
               <tr *ngIf="gasStation.type==='Ipiranga'" class="ipiranga-2 w-100 h-50"><td></td></tr>
               <tr *ngIf="gasStation.type==='Shell'" class="shell-1 w-100 h-50"><td></td></tr>
@@ -28,7 +28,7 @@
             <h3><b>{{ gasStation.name | uppercase }}</b></h3>
             <p>{{ gasStation.location }}</p>
           </td>
-          <td class="w-10">
+          <td class="w-10 pr-5">
             <table class="pull-right text-center">
               <tr>
                 <td>
