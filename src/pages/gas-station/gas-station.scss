@@ -45,28 +45,35 @@ ion-modal {
   }
 }
 
-.title-gas {
-  font-size: 22px;
+.title {
   font-weight: bold;
   color: #272727;
+}
+
+.title-gas {
+  font-size: 22px;
+}
+
+.sub-title {
+  font-size: 16px;
 }
 
 .location-gas {
   color: #272727;
 }
 
-.gridText {
+.contact {
+  font-size: 12px;
+}
+
+.grid-text {
   overflow:scroll;
   max-height: 80%;
-  padding-bottom: 20px;
+  padding-bottom: 10px;
 }
 
 .footer-pop {
-  background-color: #488AFF;
-  height: 12%;
-  margin-top: 20px;
+  margin: 0;
   position: absolute;
-  right: 0;
   bottom: 0;
-  left: 0;
 }

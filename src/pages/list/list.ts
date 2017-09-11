@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController, NavParams, Nav, ModalController, LoadingController } from 'ionic-angular';
+import { NavController, NavParams, Nav, ModalController, LoadingController, AlertController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 
 import { FirebaseService } from '../firebase.service';
@@ -30,6 +30,7 @@ export class ListPage {
     public modalCtrl: ModalController,
     public navParams: NavParams,
     public loadingCtrl: LoadingController,
+    public alertCtrl: AlertController,
     public geolocation: Geolocation,
     private firebaseService: FirebaseService,
     private storage: Storage
@@ -51,7 +52,18 @@ export class ListPage {
       let latlngUser = new LatLng(resp.coords.latitude, resp.coords.longitude);
       this.calculateDistances(latlngUser);
     }).catch((error) => {
-      console.log('Error getting location', error);
+      let alert = this.alertCtrl.create({
+        title: 'Erro!',
+        subTitle: 'Ocorreu um erro ao tentar buscar a sua localização.',
+        buttons: [{
+          text: 'Tente novamente',
+          handler: data => {
+            this.presentLoadingDefault();
+          }
+        }]
+      });
+
+      alert.present();
     });
   }
 

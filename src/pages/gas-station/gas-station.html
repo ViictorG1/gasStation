@@ -1,8 +1,8 @@
 <ion-content padding class="sample-modal-page">
-  <ion-grid text-center padding-top class="gridText">
+  <ion-grid text-center padding-top class="grid-text">
     <ion-row>
       <ion-col col-12>
-        <span class="title-gas">{{ gasStation.name | uppercase }}</span><br/>
+        <span class="title-gas title">{{ gasStation.name | uppercase }}</span><br/>
         <span class="location-gas">{{ gasStation.location }}</span>
       </ion-col>
     </ion-row>
@@ -59,8 +59,44 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-  <ion-grid class="footer-pop">
-    <ion-buttons right>
+  <ion-grid class="divider"></ion-grid>
+  <ion-grid text-center padding-top class="grid-text">
+    <ion-row>
+      <ion-col col-12>
+        <span class="sub-title title">CARTÕES ACEITOS</span><br/>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col col-3>
+        <img src='assets/images/visa-icon.png'/>
+      </ion-col>
+        <ion-col col-3>
+        <img src='assets/images/master-card-icon.png'/>
+      </ion-col>
+      <ion-col col-3>
+        <img src='assets/images/american-express-icon.png'/>
+      </ion-col>
+      <ion-col col-3>
+        <img src='assets/images/paypal-icon.png'/>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col col-12>
+        <span class="sub-title title">CONTATO</span><br/>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col col-12>
+        <span class="contact">48 99999-9999 | email@email.com.br</span><br/>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <button (click)="goNavigation()" class="footer-pop" ion-button large icon-right full>
+    Iniciar rota
+    <ion-icon name="navigate"></ion-icon>
+  </button>
+  <!--<ion-grid class="footer-pop">-->
+    <!--<ion-buttons right>
       <button ion-button color="light" clear icon-only>
         <ion-icon name="information-circle" is-active="false"></ion-icon>
       </button>
@@ -68,8 +104,8 @@
         <ion-icon name="share" is-active="false"></ion-icon>
       </button>
       <button (click)="goNavigation()" ion-button color="light" clear icon-only>
-        <ion-icon name="arrow-dropright-circle" is-active="false"></ion-icon>
+        <ion-icon name="navigate" is-active="false"></ion-icon>
       </button>
-    </ion-buttons>
-  </ion-grid>
+    </ion-buttons>-->
+  <!--</ion-grid>-->
 </ion-content>
