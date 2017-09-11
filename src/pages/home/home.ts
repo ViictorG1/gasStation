@@ -110,13 +110,14 @@ export class HomePage {
       unitSystem: google.maps.UnitSystem.METRIC
     }, (response, status) => {
       let leg = response.routes[0].legs[0];
-      this.makeMarker(leg.start_location, this.icons.start, 'Sua localização');
+      // this.makeMarker(leg.start_location, this.icons.start, 'Sua localização');
       this.makeMarker(leg.end_location, this.icons.end, this.gasStation.name);
-      if (status === 'OK') {
-        this.directionsDisplay.setDirections(response);
-      } else {
-        window.alert('Directions request failed due to ' + status);
-      }
+      this.addInfoWindow();
+      // if (status === 'OK') {
+      //   this.directionsDisplay.setDirections(response);
+      // } else {
+      //   window.alert('Directions request failed due to ' + status);
+      // }
     });
   }
 
@@ -128,11 +129,9 @@ export class HomePage {
       title: title
     });
 
-    if (!(title === 'Sua localização')) {
-      google.maps.event.addListener(marker, 'click', () => {
-        this.addInfoWindow();
-      });
-    }
+    google.maps.event.addListener(marker, 'click', () => {
+      this.addInfoWindow();
+    });
   }
 
   getMap() {
