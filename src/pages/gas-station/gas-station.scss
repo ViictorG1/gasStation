@@ -14,22 +14,29 @@ ion-modal {
   ion-content {
       &.content {
           div.scroll-content {
-              top: 10%;
-              left: 10%;
-              width: 80%;
-              height: 80%;
-              overflow:hidden;
-              box-shadow: 3px 5px 3px #989898;
-              padding: 0px !important;
+            top: 10%;
+            left: 10%;
+            width: 80%;
+            height: 80%;
+            overflow:hidden;
+            box-shadow: 3px 5px 3px #989898;
+            padding: 0px !important;
           }
+      }
+      .content-gas {
+        top: 10%;
+        left: 10%;
+        width: 100%;
+        height: 90%;
+        overflow: scroll;
       }
 
       &.content-ios {
           background-color: rgba(0, 0, 0, 0.3);
 
           div.scroll-content {
-              background-color: #f8f8f8;
-              border-radius: 13px;
+            background-color: #f8f8f8;
+            border-radius: 13px;
           }
       }
 
@@ -37,9 +44,9 @@ ion-modal {
           background-color: rgba(0, 0, 0, 0.5);
           
           div.scroll-content {
-              background-color: #fafafa;
-              border-radius: 2px;
-              box-shadow: 0 16px 20px rgba(0, 0, 0, 0.4);
+            background-color: #fafafa;
+            border-radius: 2px;
+            box-shadow: 0 16px 20px rgba(0, 0, 0, 0.4);
           }
       }
   }
@@ -75,5 +82,5 @@ ion-modal {
 .footer-pop {
   margin: 0;
   position: absolute;
-  bottom: 0;
+  bottom: 0px;
 }

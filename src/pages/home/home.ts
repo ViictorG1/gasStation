@@ -23,7 +23,10 @@ export class HomePage {
   listPage = { title: 'List', component: ListPage };
   loading: any;
   gasStation: any;
+  gasStations: any[] = [];
+  filteredGasStations: any[] = [];
   backIsHide: boolean = false;
+  searchButton: boolean = false;
   directionsService = new google.maps.DirectionsService;
   directionsDisplay = new google.maps.DirectionsRenderer;
   icons = {
@@ -67,21 +70,49 @@ export class HomePage {
   loadMap() {
     this.gasStation = this.navParams.get('gasStation') || undefined;
     this.backIsHide = this.navParams.get('backIsHide') || false;
+    this.gasStations = this.navParams.get('gasStations') || [];
 
     this.map = new google.maps.Map(this.mapElement.nativeElement, {
       zoom: 10,
       center: this.latlngUser,
-      scrollwheel: false
+      scrollwheel: false,
+      fullscreenControl: false,
+      streetViewControl: false,
+      mapTypeControl: false
+    });
+
+    //SEARCH BOX
+    var input = document.getElementById('pac-input');
+    var searchBox = new google.maps.places.SearchBox(input);
+    this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+    this.map.addListener('bounds_changed', (a: any) => {
+      searchBox.setBounds(this.map.getBounds());
+    });
+
+    searchBox.addListener('places_changed', (a: any) => {
+      this.clearOverlays();      
+      let places = searchBox.getPlaces();
+      let bounds = new google.maps.LatLngBounds();
+      places.forEach((place: any) => {
+        if (place.geometry.viewport) {
+          bounds.union(place.geometry.viewport);
+        } else {
+          bounds.extend(place.geometry.location);
+        }
+      
+        this.searchGasStations(place);
+      });
     });
     
-    this.directionsDisplay.setMap(this.map);
-    this.directionsDisplay.setOptions({
-      polylineOptions: {
-        strokeWeight: 3,
-        strokeOpacity: 0.9,
-        strokeColor: '#488AFF'
-      }
-    , suppressMarkers: true });
+    // this.directionsDisplay.setMap(this.map);
+    // this.directionsDisplay.setOptions({
+    //   polylineOptions: {
+    //     strokeWeight: 3,
+    //     strokeOpacity: 0.9,
+    //     strokeColor: '#488AFF'
+    //   }
+    // , suppressMarkers: true });
 
     if (this.gasStation) {
         this.latilong = new LatLng(parseFloat(this.gasStation.latitude), parseFloat(this.gasStation.longitude));
@@ -94,9 +125,9 @@ export class HomePage {
     this.calculateAndDisplayRoute();
   }
 
-  addInfoWindow() {
+  addInfoWindow(gasStation: any) {
     let gasStationModal = this.modalCtrl.create(GasStationPage, {
-      gasStation: this.gasStation,
+      gasStation: gasStation,
       latlngUser: this.latlngUser
     });
     gasStationModal.present();
@@ -110,28 +141,28 @@ export class HomePage {
       unitSystem: google.maps.UnitSystem.METRIC
     }, (response, status) => {
       let leg = response.routes[0].legs[0];
-      // this.makeMarker(leg.start_location, this.icons.start, 'Sua localização');
-      this.makeMarker(leg.end_location, this.icons.end, this.gasStation.name);
-      this.addInfoWindow();
-      // if (status === 'OK') {
-      //   this.directionsDisplay.setDirections(response);
-      // } else {
-      //   window.alert('Directions request failed due to ' + status);
-      // }
+      let marker = this.makeMarker(leg.end_location, this.icons.end, this.gasStation);
+      this.filteredGasStations.push(marker);
+      this.addInfoWindow(this.gasStation);
     });
   }
 
-  makeMarker(position, icon, title) {
+  makeMarker(position, icon, gasStation) {
     let marker = new google.maps.Marker({
       position: position,
       map: this.map,
       icon: icon,
-      title: title
+      title: gasStation.name
     });
 
     google.maps.event.addListener(marker, 'click', () => {
-      this.addInfoWindow();
+      this.addInfoWindow(gasStation);
     });
+
+    this.map.setZoom(17);
+    this.map.panTo(marker.position);
+
+    return marker;
   }
 
   getMap() {
@@ -151,4 +182,47 @@ export class HomePage {
     this.loading.present();
   }
 
+  openSearchButton() {
+    if (this.searchButton) {
+      this.searchButton = false;
+    } else {
+      this.searchButton = true;      
+    }
+  }
+
+  searchGasStations(place: any) {
+    let circle = new google.maps.Circle({
+      strokeColor: '#FF0000',
+      strokeOpacity: 0,
+      fillColor: '#FF0000',
+      fillOpacity: 0,
+      map: this.map,
+      center: new LatLng(place.geometry.location.lat(), place.geometry.location.lng()),
+      radius: 1000
+    });
+
+    let bounds = circle.getBounds();
+
+    if (this.gasStations) {
+      this.gasStations.forEach((gasStation: any) => {
+        let marker = new google.maps.Marker({
+          position: new LatLng(gasStation.latitude, gasStation.longitude)
+        });
+        
+        if (google.maps.geometry.spherical.computeDistanceBetween(marker.getPosition(), circle.getCenter()) <= circle.getRadius()) {
+          let gas = this.makeMarker(new LatLng(gasStation.latitude, gasStation.longitude), this.icons.end, gasStation);
+          this.filteredGasStations.push(gas);
+        } else {
+          console.log('OUTSIDE');
+        }
+      });
+    }
+
+    this.map.fitBounds(bounds);
+  }
+
+  clearOverlays() {
+    while(this.filteredGasStations.length) { this.filteredGasStations.pop().setMap(null); }
+    this.filteredGasStations.length = 0;
+  }
 }

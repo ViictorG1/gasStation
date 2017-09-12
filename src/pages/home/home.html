@@ -7,10 +7,7 @@
     </ion-buttons>
     <ion-title>MAPA DOS POSTOS</ion-title>
     <ion-buttons right>
-      <button ion-button icon-only>
-        <ion-icon name="map"></ion-icon>
-      </button>
-      <button ion-button icon-only>
+      <button (click)="openSearchButton()" ion-button icon-only>
         <ion-icon name="search"></ion-icon>
       </button>
     </ion-buttons>
@@ -18,5 +15,6 @@
 </ion-header>
 
 <ion-content>
+  <input [hidden]="!searchButton" id="pac-input" class="controls" type="text" placeholder="Pesquisar"/>
   <div #map id="map" style="height:100%;"></div>
 </ion-content>

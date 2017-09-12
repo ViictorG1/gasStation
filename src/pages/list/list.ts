@@ -43,7 +43,8 @@ export class ListPage {
 
     this.navCtrl.push(HomePage, {
       gasStation: gasStation,
-      backIsHide: true
+      backIsHide: true,
+      gasStations: this.gasStationsList
     });
   }
 
