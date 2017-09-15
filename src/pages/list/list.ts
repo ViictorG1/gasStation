@@ -48,6 +48,10 @@ export class ListPage {
     });
   }
 
+  openMap() {
+    this.navCtrl.push(HomePage, {gasStations: this.gasStationsList, backIsHide: true});
+  }
+
   getCurrentLocation() {
     this.geolocation.getCurrentPosition({ enableHighAccuracy: true, timeout: 5000 }).then((resp) => {
       let latlngUser = new LatLng(resp.coords.latitude, resp.coords.longitude);
@@ -56,12 +60,10 @@ export class ListPage {
       let alert = this.alertCtrl.create({
         title: 'Erro!',
         subTitle: 'Ocorreu um erro ao tentar buscar a sua localização.',
-        buttons: [{
-          text: 'Tente novamente',
-          handler: data => {
-            this.presentLoadingDefault();
-          }
-        }]
+        buttons: [
+          { text: 'Tente novamente', handler: data => { this.presentLoadingDefault();},},
+          { text: 'Continuar sem localização'}
+        ]
       });
 
       alert.present();

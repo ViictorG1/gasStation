@@ -1,9 +1,14 @@
 <ion-header>
   <ion-navbar color="primary">
     <ion-title>LISTA</ion-title>
-    <ion-buttons end>
+    <ion-buttons left>
       <button ion-button icon-only>
         <ion-icon name="funnel"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-buttons right>
+      <button (click)="openMap()" ion-button icon-only>
+        <ion-icon name="map"></ion-icon>
       </button>
     </ion-buttons>
   </ion-navbar>
