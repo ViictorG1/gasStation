@@ -30,6 +30,7 @@
         "@ionic-native/web-intent": "^4.0.1",
         "@ionic/storage": "^2.0.1",
         "@types/google-maps": "^3.2.0",
+        "@types/jquery": "^3.2.12",
         "angularfire2": "^4.0.0-rc.1",
         "com-darryncampbell-cordova-plugin-intent": "0.0.14",
         "cordova-android": "^6.2.2",

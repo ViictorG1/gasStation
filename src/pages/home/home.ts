@@ -1,5 +1,6 @@
 import { NavController, NavParams, ModalController, LoadingController, AlertController } from 'ionic-angular';
 import { Component, ViewChild, ElementRef } from '@angular/core';
+import $ from "jquery";
 
 import { LatLng } from '@ionic-native/google-maps';
 import { Geolocation } from '@ionic-native/geolocation';
@@ -59,18 +60,18 @@ export class HomePage {
       componentRestrictions: {country: "bra"}
     };
 
-    var input = document.getElementById('pac-input');
-    var searchBox = new google.maps.places.Autocomplete(input, options);
+    let input = document.getElementById('pac-input');
+    let searchBox = new google.maps.places.Autocomplete(input, options);
     searchBox.setTypes(['geocode']);
     this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
     this.map.addListener('bounds_changed', (a: any) => {
       searchBox.setBounds(this.map.getBounds());
     });
-
     searchBox.addListener('place_changed', (a: any) => {
       let place = searchBox.getPlace();
       this.searchGasStations(place);
+      $('#pac-input').val('');      
     });
   }
 
@@ -137,7 +138,6 @@ export class HomePage {
     });
 
     this.filteredGasStations.push(marker);
-    console.log(this.filteredGasStations);
   }
 
   getMap() {
@@ -187,19 +187,17 @@ export class HomePage {
 
     let bounds = circle.getBounds();
 
-    if (this.gasStations) {
-      this.gasStations.forEach((gasStation: any) => {
-        let marker = new google.maps.Marker({
-          position: new LatLng(gasStation.latitude, gasStation.longitude)
-        });
+    // if (this.gasStations) {
+    //   this.gasStations.forEach((gasStation: any) => {
+    //     let marker = new google.maps.Marker({
+    //       position: new LatLng(gasStation.latitude, gasStation.longitude)
+    //     });
         
-        if (google.maps.geometry.spherical.computeDistanceBetween(marker.getPosition(), circle.getCenter()) <= circle.getRadius()) {
-          this.makeMarker(new LatLng(gasStation.latitude, gasStation.longitude), this.icons.gasStation, gasStation);
-        } else {
-          console.log('OUTSIDE');
-        }
-      });
-    }
+    //     if (google.maps.geometry) {
+    //       let response: any = google.maps.geometry.spherical.computeDistanceBetween(marker.getPosition(), circle.getCenter()) <= circle.getRadius();
+    //     }
+    //   });
+    // }
 
     this.map.fitBounds(bounds);
   }

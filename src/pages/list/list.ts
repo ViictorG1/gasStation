@@ -4,6 +4,7 @@ import { Storage } from '@ionic/storage';
 
 import { FirebaseService } from '../firebase.service';
 import { HomePage } from '../home/home';
+import { FilterPage } from '../filter/filter';
 
 import { LatLng } from '@ionic-native/google-maps';
 import { Geolocation } from '@ionic-native/geolocation';
@@ -140,6 +141,11 @@ export class ListPage {
     this.firebaseService.setChangeToFalse(this.change.data);
     this.change.value = false;
     this.change.data = "";
+  }
+
+  openFilter() {
+    let filterModal = this.modalCtrl.create(FilterPage);
+    filterModal.present();
   }
 
   loadGasStations() {

@@ -2,7 +2,7 @@
   <ion-navbar color="primary">
     <ion-title>LISTA</ion-title>
     <ion-buttons left>
-      <button ion-button icon-only>
+      <button (click)="openFilter()" ion-button icon-only>
         <ion-icon name="funnel"></ion-icon>
       </button>
     </ion-buttons>
@@ -13,7 +13,6 @@
     </ion-buttons>
   </ion-navbar>
 </ion-header>
-
 <ion-content>
   <ion-list>
     <ion-item ion-item *ngFor="let gasStation of gasStationsList" (click)="openGasStation(gasStation)">
