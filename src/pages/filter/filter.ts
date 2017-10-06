@@ -7,6 +7,14 @@ import { ViewController } from 'ionic-angular';
 })
 export class FilterPage {
 
+  filter: any = {
+    gasType: '',
+    distance: 1,
+  };
+  selectOptions: any = {
+    interface: 'popover'
+  }
+
   constructor(
     public viewCtrl: ViewController
   ) {
@@ -14,6 +22,10 @@ export class FilterPage {
 
   dismiss(data) {
     this.viewCtrl.dismiss(data);
+  }
+
+  filterList() {
+    console.log(this.filter);
   }
 
 }

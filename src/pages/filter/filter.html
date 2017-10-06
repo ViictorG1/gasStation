@@ -1,6 +1,42 @@
 <ion-content padding class="sample-modal-page">
   <div class="content-gas pb-10">
-    <ion-grid text-center padding-top class="grid-text">
+    <ion-grid>
+      <ion-row text-center padding-top>
+        <ion-col col-12>
+          <span class="title title-filter">FILTRAR POSTOS</span><br/>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col col-12>
+          <ion-list>
+            <ion-list-header class="pt-10">
+              Combustível
+            </ion-list-header>
+            <ion-item>
+              <ion-select placeholder="Escolha" [(ngModel)]="filter.gasType" interface="popover">
+                <ion-option>Gasolina comum</ion-option>
+                <ion-option>Gasolina aditivada</ion-option>
+                <ion-option>Álcool</ion-option>
+                <ion-option>Diesel</ion-option>
+                <ion-option>GNV</ion-option>
+              </ion-select>
+            </ion-item>
+            <ion-list-header class="pt-10">
+              Distância
+              <ion-badge item-end>{{ filter.distance }}km</ion-badge>              
+            </ion-list-header>
+            <ion-item>
+              <ion-range min="1" max="10" [(ngModel)]="filter.distance" color="primary">
+                <ion-label range-left>1km</ion-label>
+                <ion-label range-right>10km</ion-label>
+              </ion-range>
+            </ion-item>
+          </ion-list>
+        </ion-col>
+      </ion-row>
     </ion-grid>
   </div>
+  <button (click)="filterList()" class="footer-pop" ion-button>
+    Filtrar
+  </button>
 </ion-content>
