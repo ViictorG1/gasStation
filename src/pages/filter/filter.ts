@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { ViewController } from 'ionic-angular';
 
 @Component({
@@ -6,6 +6,8 @@ import { ViewController } from 'ionic-angular';
   templateUrl: 'filter.html'
 })
 export class FilterPage {
+
+  @Output() dataFilter: EventEmitter<number> = new EventEmitter<number>();
 
   filter: any = {
     gasType: '',
@@ -25,7 +27,8 @@ export class FilterPage {
   }
 
   filterList() {
-    console.log(this.filter);
+    this.filter.distance = this.filter.distance * 1000;
+    this.dismiss(this.filter);
   }
 
 }

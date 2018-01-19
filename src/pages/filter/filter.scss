@@ -63,9 +63,16 @@ ion-list-header > .item-inner > .input-wrapper > .label {
 }
 
 
-.footer-pop {
+.button-filter {
   margin: 0;
   position: absolute;
   bottom: 20px;
   right: 20px;
+}
+
+.button-filter-cancel {
+  margin: 0;
+  position: absolute;
+  bottom: 20px;
+  right: 130px;
 }

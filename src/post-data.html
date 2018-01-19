@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Search for up to 200 places with Radar Search</title>
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+    <script src="https://www.gstatic.com/firebasejs/4.8.2/firebase.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.16.6/lodash.min.js"></script>
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyDiH2tM2VkKoZWgAhI89y2ixvOKr908nsw",
+        authDomain: "gasstation-981b8.firebaseapp.com",
+        databaseURL: "https://gasstation-981b8.firebaseio.com",
+        projectId: "gasstation-981b8",
+        storageBucket: "gasstation-981b8.appspot.com",
+        messagingSenderId: "256624249194"
+      };
+      firebase.initializeApp(config);
+
+      function writeData(place) {
+        var type = '';
+  
+        console.log(place.name);
+        console.log(place.name.includes('Ipiranga'));
+
+        if (place.name.includes('Ipiranga')) {
+          type = 'Ipiranga';
+        } else if (place.name.includes('Shell')) {
+          type = 'Shell';
+        } else if (place.name.includes('BR')) {
+          type = 'BR';
+        } else {
+          type = 'UNDEFINED';
+        }
+
+        console.log(type)
+
+        var rootRef = firebase.database().ref();
+        var storesRef = rootRef.child('/gasStations');
+        var newStoreRef = storesRef.push();
+
+        newStoreRef.set({
+          name: place.name,
+          location: place.formatted_address,
+          type: type,
+          latitude: place.geometry.location.lat(),
+          longitude: place.geometry.location.lng()
+        });
+
+      }
+    </script>
+    <script>
+      // This example requires the Places library. Include the libraries=places
+      // parameter when you first load the API. For example:
+      // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
+
+      var map;
+      var infoWindow;
+      var service;
+
+      function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: -33.867, lng: 151.206},
+          zoom: 15,
+          styles: [{
+            stylers: [{ visibility: 'simplified' }]
+          }, {
+            elementType: 'labels',
+            stylers: [{ visibility: 'off' }]
+          }]
+        });
+
+        infoWindow = new google.maps.InfoWindow();
+        service = new google.maps.places.PlacesService(map);
+
+        // The idle event is a debounced event, so we can query & listen without
+        // throwing too many requests at the server.
+        attGasStations();
+      }
+
+      function attGasStations() {
+        var params = {
+          location: {lat: -27, lng: -48},
+          radius: 100000,
+          query: 'Postos de Gasolina Florianópolis',
+          types: ['gas_station'],
+          key: 'AIzaSyC4ac6cxMs7NqDfE7SWRqnJIlbg5PyhWcc'
+        }
+
+        var response = new google.maps.places.PlacesService(map);
+        response.textSearch(params, this.processResults);
+      }
+
+      function callback(results, status) {
+        if (status == google.maps.places.PlacesServiceStatus.OK) {
+          for (var i = 0; i < results.length; i++) {
+            var place = results[i];
+          }
+        }
+      }
+
+      function processResults(results, status, pagination) {
+        if (status !== google.maps.places.PlacesServiceStatus.OK) {
+          return;
+        } else {
+          if (pagination.hasNextPage) {
+            for (var i = 0; i < results.length; i++) {
+              var place = results[i];
+              writeData(place);
+            }
+            pagination.nextPage();
+          }
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC4ac6cxMs7NqDfE7SWRqnJIlbg5PyhWcc&callback=initMap&libraries=places,visualization" async defer></script>
+  </body>
+</html>

@@ -7,7 +7,6 @@ export class FirebaseService {
 
   gasStations: FirebaseListObservable<any[]>;
   changes: FirebaseListObservable<any[]>; 
-  private apiPath: string;
 
   constructor(
     public af: AngularFireDatabase,
@@ -21,6 +20,29 @@ export class FirebaseService {
 
   getChanges() {
     return this.changes;
+  }
+
+  postGasStations(data: any) {
+    let type = '';
+
+    if (data.name.includes('Ipiranga')) {
+      type = 'Ipiranga';
+    } else if (data.name.includes('Shell')) {
+      type = 'Shell';
+    } else if (data.name.includes('BR')) {
+      type = 'BR';
+    } else {
+      type = 'UNDEFINED';
+    }
+
+    this.af.list('/gasStations').push({
+      id: data.id,
+      name: data.name,
+      location: data.formatted_address,
+      type: type,
+      latitude: data.geometry.location.lat(),
+      longitude: data.geometry.location.lng()
+    });
   }
 
   setChangeToFalse(changeValue: string) {

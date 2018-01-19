@@ -1,6 +1,6 @@
 import { NavController, NavParams, ModalController, LoadingController, AlertController } from 'ionic-angular';
 import { Component, ViewChild, ElementRef } from '@angular/core';
-import $ from "jquery";
+import $ from 'jquery';
 
 import { LatLng } from '@ionic-native/google-maps';
 import { Geolocation } from '@ionic-native/geolocation';
@@ -30,9 +30,41 @@ export class HomePage {
   searchButton: boolean = false;
   directionsService = new google.maps.DirectionsService;
   directionsDisplay = new google.maps.DirectionsRenderer;
-  icons = {
+  iconsIpiranga = {
     gasStation: new google.maps.MarkerImage(
-      'http://i.imgur.com/svzzuiv.png',
+      'assets/images/ipirangam.png',
+      new google.maps.Size( 20, 27 ),
+      new google.maps.Point( 0, 0 ),
+      new google.maps.Point( 10, 26 )
+    )
+  };
+  iconsShell = {
+    gasStation: new google.maps.MarkerImage(
+      'assets/images/shellm.png',
+      new google.maps.Size( 20, 27 ),
+      new google.maps.Point( 0, 0 ),
+      new google.maps.Point( 10, 26 )
+    )
+  };
+  iconsBr = {
+    gasStation: new google.maps.MarkerImage(
+      'assets/images/brm.png',
+      new google.maps.Size( 20, 27 ),
+      new google.maps.Point( 0, 0 ),
+      new google.maps.Point( 10, 26 )
+    )
+  };
+  iconsUndefined = {
+    gasStation: new google.maps.MarkerImage(
+      'assets/images/undefinedm.png',
+      new google.maps.Size( 20, 27 ),
+      new google.maps.Point( 0, 0 ),
+      new google.maps.Point( 10, 26 )
+    )
+  };
+  iconsUser = {
+    gasStation: new google.maps.MarkerImage(
+      'assets/images/user.png',
       new google.maps.Size( 48, 48 ),
       new google.maps.Point( 0, 0 ),
       new google.maps.Point( 25, 40 )
@@ -84,7 +116,39 @@ export class HomePage {
   loadAllGasStations() {
     if (this.gasStations) {
       this.gasStations.forEach((gasStation: any) => {
-        this.makeMarker(new LatLng(parseFloat(gasStation.latitude), parseFloat(gasStation.longitude)), this.icons.gasStation, gasStation);
+        switch (gasStation.type) {
+          case 'Ipiranga':
+          this.makeMarker(
+            new LatLng(parseFloat(gasStation.latitude),
+            parseFloat(gasStation.longitude)),
+            this.iconsIpiranga.gasStation,
+            gasStation);
+          break;
+
+          case 'Shell':
+          this.makeMarker(
+            new LatLng(parseFloat(gasStation.latitude),
+            parseFloat(gasStation.longitude)),
+            this.iconsShell.gasStation,
+            gasStation);
+          break;
+
+          case 'BR':
+          this.makeMarker(
+            new LatLng(parseFloat(gasStation.latitude),
+            parseFloat(gasStation.longitude)),
+            this.iconsBr.gasStation,
+            gasStation);
+          break;
+
+          case 'UNDEFINED':
+          this.makeMarker(
+            new LatLng(parseFloat(gasStation.latitude),
+            parseFloat(gasStation.longitude)),
+            this.iconsUndefined.gasStation,
+            gasStation);
+          break;
+        }
       });
     }
   }
@@ -103,6 +167,11 @@ export class HomePage {
 
     this.initSearchComponent();
 
+    this.makeMarker(
+      this.userLocation,
+      this.iconsUser.gasStation
+    );
+
     this.loading.dismiss();
 
     if (this.gasStation) {
@@ -112,7 +181,13 @@ export class HomePage {
       this.map.setZoom(17);
       this.map.panTo(this.gasStationLocation);
     } else {
-      this.map.setZoom(11);
+      let bounds = new google.maps.LatLngBounds();
+      for (let i = 0; i < this.gasStations.length; i++) {
+        bounds.extend(new LatLng(this.gasStations[i].latitude, this.gasStations[i].longitude));
+      }
+
+      this.map.fitBounds(bounds);
+      this.map.setZoom(15);
       this.loadAllGasStations();
     }
   }
@@ -125,18 +200,29 @@ export class HomePage {
     gasStationModal.present();
   }
 
-  makeMarker(position, icon, gasStation) {
-    let marker = new google.maps.Marker({
-      position: position,
-      map: this.map,
-      icon: icon,
-      title: gasStation.name
-    });
+  makeMarker(position, icon, gasStation?) {
+    let marker;
 
-    google.maps.event.addListener(marker, 'click', () => {
-      this.addInfoWindow(gasStation);
-    });
+    if (gasStation) {
+      marker = new google.maps.Marker({
+        position: position,
+        map: this.map,
+        icon: icon,
+        title: gasStation.name
+      });
 
+      google.maps.event.addListener(marker, 'click', () => {
+        this.addInfoWindow(gasStation);
+      });  
+    } else {
+      marker = new google.maps.Marker({
+        position: position,
+        map: this.map,
+        icon: icon,
+        title: 'Você'
+      });
+    }
+  
     this.filteredGasStations.push(marker);
   }
 

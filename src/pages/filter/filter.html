@@ -14,11 +14,11 @@
             </ion-list-header>
             <ion-item>
               <ion-select placeholder="Escolha" [(ngModel)]="filter.gasType" interface="popover">
-                <ion-option>Gasolina comum</ion-option>
-                <ion-option>Gasolina aditivada</ion-option>
-                <ion-option>Álcool</ion-option>
-                <ion-option>Diesel</ion-option>
-                <ion-option>GNV</ion-option>
+                <ion-option value="comum">Gasolina comum</ion-option>
+                <ion-option value="aditivada">Gasolina aditivada</ion-option>
+                <ion-option value="alcool">Álcool</ion-option>
+                <ion-option value="diesel">Diesel</ion-option>
+                <ion-option value="gnv">GNV</ion-option>
               </ion-select>
             </ion-item>
             <ion-list-header class="pt-10">
@@ -26,7 +26,7 @@
               <ion-badge item-end>{{ filter.distance }}km</ion-badge>              
             </ion-list-header>
             <ion-item>
-              <ion-range min="1" max="10" [(ngModel)]="filter.distance" color="primary">
+              <ion-range min="1" max="10" step="1" snaps="true" [(ngModel)]="filter.distance" color="primary">
                 <ion-label range-left>1km</ion-label>
                 <ion-label range-right>10km</ion-label>
               </ion-range>
@@ -36,7 +36,10 @@
       </ion-row>
     </ion-grid>
   </div>
-  <button (click)="filterList()" class="footer-pop" ion-button>
-    Filtrar
+  <button (click)="dismiss()" class="button-filter-cancel" ion-button color="danger">
+    Cancelar
+  </button>
+  <button (click)="filterList()" class="button-filter" ion-button>
+    Aplicar
   </button>
 </ion-content>

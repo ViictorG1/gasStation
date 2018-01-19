@@ -62,23 +62,21 @@
     </ion-grid>
     <ion-grid class="divider"></ion-grid>
     <ion-grid text-center padding-top class="grid-text">
-      <ion-row>
-        <ion-col col-12>
-          <span class="sub-title title">CARTÕES ACEITOS</span><br/>
-        </ion-col>
-      </ion-row>
       <ion-row class="p-10">
         <ion-col col-3>
-          <img src='assets/icon/visa-icon.png'/>
+          <img src='assets/icon/card.png'/>
         </ion-col>
           <ion-col col-3>
-          <img src='assets/icon/master-card-icon.png'/>
+          <img src='assets/icon/store.png'/>
         </ion-col>
         <ion-col col-3>
-          <img src='assets/icon/american-express-icon.png'/>
+          <img src='assets/icon/coffee.png'/>
         </ion-col>
         <ion-col col-3>
-          <img src='assets/icon/paypal-icon.png'/>
+          <img src='assets/icon/toilet.png'/>
+        </ion-col>
+        <ion-col col-3>
+          <img src='assets/icon/wifi.png'/>
         </ion-col>
       </ion-row>
       <ion-row>
@@ -88,7 +86,8 @@
       </ion-row>
       <ion-row>
         <ion-col col-12>
-          <span class="contact">48 99999-9999 | email@email.com.br</span><br/>
+          <span *ngIf="gasStation.number; else noNumber" class="contact">{{ gasStation.number }}</span><br/>
+          <ng-template #noNumber>Nenhum contato encontrado</ng-template>
         </ion-col>
       </ion-row>
     </ion-grid>

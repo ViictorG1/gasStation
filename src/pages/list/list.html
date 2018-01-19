@@ -1,6 +1,6 @@
 <ion-header>
   <ion-navbar color="primary">
-    <ion-title>LISTA</ion-title>
+    <ion-title>GasBuster</ion-title>
     <ion-buttons left>
       <button (click)="openFilter()" ion-button icon-only>
         <ion-icon name="funnel"></ion-icon>
@@ -14,7 +14,22 @@
   </ion-navbar>
 </ion-header>
 <ion-content>
-  <ion-list>
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      pullingText="Pull to refresh"
+      refreshingSpinner="circles">
+    </ion-refresher-content>
+  </ion-refresher>
+  <div [hidden]="gasStations.length === undefined" class="founded-list text-center">
+    <div *ngIf="!loadingRoute">
+      <span *ngIf="loading && !gasStationsList.length" class="w-100">Carregando | Raio: {{ this.raio | transformDistance }}</span>
+      <span *ngIf="gasStationsList.length >= 1" class="w-100">Postos na sua região.</span>
+      <span *ngIf="gasStationsList.length === 0 && !loading" class="w-100">Infelizmente não foi encontrado nenhum posto dentre o raio de {{ this.raio | transformDistance }}. Aumente o raio para tentar encontrar.</span>
+    </div>
+    <span *ngIf="loadingRoute">Calculando distâncias</span>
+  </div>
+  <ion-list [hidden]="gasStations.length === undefined">
     <ion-item ion-item *ngFor="let gasStation of gasStationsList" (click)="openGasStation(gasStation)">
       <table class="w-100">
         <tr>
@@ -26,22 +41,25 @@
               <tr *ngIf="gasStation.type==='Shell'" class="shell-2 w-100 h-50"><td></td></tr>
               <tr *ngIf="gasStation.type==='BR'" class="br-1 w-100 h-50"><td></td></tr>
               <tr *ngIf="gasStation.type==='BR'" class="br-2 w-100 h-50"><td></td></tr>
+              <tr *ngIf="gasStation.type==='UNDEFINED'" class="undefined-color-1 w-100 h-50"><td></td></tr>
+              <tr *ngIf="gasStation.type==='UNDEFINED'" class="undefined-color-2 w-100 h-50"><td></td></tr>
             </table>
           </td>
           <td class="w-80 text-gas">
-            <h3><b>{{ gasStation.name | uppercase }}</b></h3>
-            <p>{{ gasStation.location }}</p>
+            <h3><b>{{ ((gasStation.name.length>35)? (gasStation.name | slice:0:30)+'...':(gasStation.name)) | uppercase }}</b></h3>
+            <p>{{ (gasStation.location.length>35)? (gasStation.location | slice:0:35)+'...':(gasStation.location) }}</p>
           </td>
           <td class="w-10 pr-5">
             <table class="pull-right text-center">
               <tr>
                 <td>
-                  <h2><b><span class="rs">R$</span>{{ gasStation.comum }}</b></h2>
+                  <h2><b><span class="rs">R$</span>{{ gasStation.comum }} GC</b></h2>
                 </td>
               </tr>
               <tr>
                 <td>
-                  <span *ngIf="!gasStation.distance" class="loading-24"></span><span>{{ gasStation.distance }}</span>
+                  <span *ngIf="!gasStation.distance" class="loading-24"></span>
+                  <span *ngIf="gasStation.distance">{{ gasStation.distance | transformDistance }}</span>
                 </td>
               </tr>
             </table>
@@ -54,5 +72,5 @@
     </ion-item>
   </ion-list>
 </ion-content>
-
+<span id="map" style="display: none"></span>
 <ion-nav id="nav" #content [root]="rootPage"></ion-nav>

@@ -33,10 +33,18 @@ export class GasStationPage {
     this.viewCtrl.dismiss(data);
   }
 
-  goNavigation() {
+  goNavigation() {    
+    let app;
+
+    if (this.launchNavigator.isAppAvailable(this.launchNavigator.APP.GOOGLE_MAPS)){
+      app = this.launchNavigator.APP.GOOGLE_MAPS;
+    } else {
+      app = this.launchNavigator.APP.USER_SELECT;
+    }
+
     let options: LaunchNavigatorOptions = {
       start: this.latlngUser,
-      app: this.launchNavigator.APP.GOOGLE_MAPS
+      app: this.launchNavigator.APP.USER_SELECT
     };
 
     this.launchNavigator.navigate([this.gasStation.latitude, this.gasStation.longitude], options)

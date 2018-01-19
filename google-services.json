@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "256624249194",
+    "firebase_url": "https://gasstation-981b8.firebaseio.com",
+    "project_id": "gasstation-981b8",
+    "storage_bucket": "gasstation-981b8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:256624249194:android:55bb54ed78de1f60",
+        "android_client_info": {
+          "package_name": "com.ionic.gasbuster"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "256624249194-jhgs2ta5mucgupdhfrjinr6gqph8fsu3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1Y9JhAN8rFLUNdtX07DNRvIkzGp7dZiQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

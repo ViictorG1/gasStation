@@ -30,6 +30,14 @@
   background-color: #F8C400;
 }
 
+.undefined-color-1 {
+  background-color: rgb(146, 146, 146);
+}
+
+.undefined-color-2 {
+  background-color: rgb(179, 179, 179);
+}
+
 .label-md {
   margin: 0px;
 }
@@ -40,4 +48,14 @@
 
 .colors-gas {
   height: 1px;
+}
+
+.founded-list {
+  padding: 5px 0px;
+  background-color: #498aff;
+  color: white;
+
+  span {
+    font-size: 14px;
+  }
 }

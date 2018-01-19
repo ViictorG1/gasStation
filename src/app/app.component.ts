@@ -1,7 +1,10 @@
 import { Component, ViewChild } from '@angular/core';
-import { Nav, Platform } from 'ionic-angular';
+import { Nav, Platform, AlertController } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { Push, PushObject, PushOptions } from '@ionic-native/push';
+import { Device } from '@ionic-native/device';
+import { HeaderColor } from '@ionic-native/header-color';
 
 import { HomePage } from '../pages/home/home';
 import { ListPage } from '../pages/list/list';
@@ -16,7 +19,15 @@ export class MyApp {
 
   pages: Array<{title: string, component: any}>;
 
-  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen) {
+  constructor(
+    public platform: Platform,
+    public statusBar: StatusBar,
+    public splashScreen: SplashScreen,
+    public alertCtrl: AlertController,
+    private push: Push,
+    private device: Device,
+    private headerColor: HeaderColor
+  ) {
     this.initializeApp();
 
     // used for an example of ngFor and navigation
@@ -29,10 +40,32 @@ export class MyApp {
 
   initializeApp() {
     this.platform.ready().then(() => {
-      // Okay, so the platform is ready and our plugins are available.
-      // Here you can do any higher level native things you might need.
+      this.headerColor.tint('#4B84FB');
       this.statusBar.styleDefault();
       this.splashScreen.hide();
+
+      const options: PushOptions = {
+        android: { senderID: '256624249194' },
+        ios: {
+            alert: 'true',
+            badge: true,
+            sound: 'false'
+        },
+        browser: {
+          pushServiceURL: 'http://push.api.phonegap.com/v1/push'
+        }
+      };
+
+      const pushObject: PushObject = this.push.init(options);
+
+      pushObject.on('notification').subscribe((notification: any) => {
+        console.log(notification)
+        let youralert = this.alertCtrl.create({
+          title: 'New Push notification',
+          message: notification.message
+        });
+        youralert.present();
+      });
     });
   }
 
