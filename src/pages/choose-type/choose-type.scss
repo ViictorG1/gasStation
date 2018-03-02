@@ -1,41 +1,28 @@
-.price {
-  font-size: 2em;
-}
-
-.rs {
-  font-size: 0.5em;
-}
-
-.values {
-  padding-top: 30px;
-}
-
 ion-modal {
-  ion-content {
+  .type-modal-page {
       &.content {
           div.scroll-content {
-            top: 10%;
+            top: 20%;
             left: 10%;
             width: 80%;
-            height: 80%;
+            height: 65%;
             overflow:hidden;
             box-shadow: 3px 5px 3px #989898;
             padding: 0px !important;
           }
       }
-      .content-gas {
-        top: 10%;
+      .content-fuel {
+        top: 20%;
         left: 10%;
         width: 100%;
         height: 90%;
-        overflow: scroll;
       }
 
       &.content-ios {
           background-color: rgba(0, 0, 0, 0.3);
 
           div.scroll-content {
-            background-color: #f8f8f8;
+            background-color: #fff;
             border-radius: 13px;
           }
       }
@@ -44,7 +31,7 @@ ion-modal {
           background-color: rgba(0, 0, 0, 0.5);
 
           div.scroll-content {
-            background-color: #fafafa;
+            background-color: #fff;
             border-radius: 2px;
             box-shadow: 0 16px 20px rgba(0, 0, 0, 0.4);
           }
@@ -52,30 +39,31 @@ ion-modal {
   }
 }
 
-.title-gas {
-  font-size: 18px;
+.title-filter {
+  font-size: 22px;
 }
 
-.sub-title {
-  font-size: 16px;
+.item-radio > .item-inner > .input-wrapper > .label{
+  padding-left: 15px !important;
 }
 
-.location-gas {
-  color: #272727;
+ion-select {
+  max-width: 100%;
 }
 
-.contact {
-  font-size: 12px;
+.select-md {
+  padding: 0px;
+  margin-left: 5px;
+  width: 95%;
 }
 
-.grid-text {
-  overflow:scroll;
-  max-height: 80%;
-  padding-bottom: 10px;
+ion-list-header > .item-inner > .input-wrapper > .label {
+  padding-left: 5px !important;
 }
 
 .footer-pop {
   margin: 0;
   position: absolute;
   bottom: 0px;
+  left: 0px;
 }

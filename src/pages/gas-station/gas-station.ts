@@ -22,9 +22,6 @@ export class GasStationPage {
     public navParams: NavParams,
     private launchNavigator: LaunchNavigator
   ) {
-  }
-
-  ngAfterViewInit() {
     this.gasStation = this.navParams.get('gasStation');
     this.latlngUser = this.navParams.get('latlngUser');
   }
@@ -33,7 +30,7 @@ export class GasStationPage {
     this.viewCtrl.dismiss(data);
   }
 
-  goNavigation() {    
+  goNavigation() {
     let app;
 
     if (this.launchNavigator.isAppAvailable(this.launchNavigator.APP.GOOGLE_MAPS)){

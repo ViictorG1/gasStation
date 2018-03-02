@@ -1,0 +1,29 @@
+<ion-content padding class="type-modal-page">
+  <div class="content-fuel pb-10">
+    <ion-grid>
+      <ion-row text-center padding-top>
+        <ion-col col-12>
+          <span class="title title-filter">Trocar combustível</span><br/>
+        </ion-col>
+      </ion-row>
+      <ion-row class="mt-10">
+        <ion-col col-12>
+          <ion-list>
+            <div *ngFor="let item of types" class="mt-10">
+              <button (click)="chooseType(item.number)" ion-button full>{{ item.label }}</button>
+            </div>
+            <!-- <ion-item (click)="chooseType(item.type)" *ngFor="let item of types">
+              {{ item.label }}
+              <ion-note item-end>
+                {{ item.type }}
+              </ion-note>
+            </ion-item> -->
+          </ion-list>
+        </ion-col>
+        <button (click)="dismiss()" class="footer-pop" color="danger" ion-button full>
+          Cancelar
+        </button>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>

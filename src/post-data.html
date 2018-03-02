@@ -33,9 +33,6 @@
       function writeData(place) {
         var type = '';
   
-        console.log(place.name);
-        console.log(place.name.includes('Ipiranga'));
-
         if (place.name.includes('Ipiranga')) {
           type = 'Ipiranga';
         } else if (place.name.includes('Shell')) {
@@ -45,8 +42,6 @@
         } else {
           type = 'UNDEFINED';
         }
-
-        console.log(type)
 
         var rootRef = firebase.database().ref();
         var storesRef = rootRef.child('/gasStations');

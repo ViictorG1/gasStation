@@ -12,7 +12,7 @@
           <span class="price">
             <b>
               <span class="rs">R$</span>
-              {{ gasStation.comum }}
+              {{ gasStation.values[0].value }}
             </b>
           </span>
         </ion-col>
@@ -20,17 +20,17 @@
           <span class="price">
             <b>
               <span class="rs">R$</span>
-              {{ gasStation.aditivada }}
+              {{ gasStation.values[1].value }}
             </b>
           </span>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col col-6 text-center>
-          Gasolina comum
+          {{ gasStation.values[0].label }}
         </ion-col>
         <ion-col col-6 text-center>
-          Gasolina aditivada
+          {{ gasStation.values[1].label }}
         </ion-col>
       </ion-row>
       <ion-row class="values">
@@ -38,7 +38,7 @@
           <span class="price">
             <b>
               <span class="rs">R$</span>
-              {{ gasStation.alcool }}
+              {{ gasStation.values[2].value }}
             </b>
           </span>
         </ion-col>
@@ -46,17 +46,17 @@
           <span class="price">
             <b>
               <span class="rs">R$</span>
-              {{ gasStation.diesel }}
+              {{ gasStation.values[3].value }}
             </b>
           </span>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col col-6 text-center>
-          Álcool
+          {{ gasStation.values[2].label }}
         </ion-col>
         <ion-col col-6 text-center>
-          Diesel
+          {{ gasStation.values[3].label }}
         </ion-col>
       </ion-row>
     </ion-grid>

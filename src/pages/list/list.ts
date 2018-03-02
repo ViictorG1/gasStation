@@ -4,11 +4,9 @@ import * as _ from 'lodash';
 
 import { FirebaseService } from '../firebase.service';
 
-import { HomePage } from '../home/home';
-import { FilterPage } from '../filter/filter';
-
 import { LatLng } from '@ionic-native/google-maps';
 import { Geolocation } from '@ionic-native/geolocation';
+import { ChooseTypePage, FilterPage, HomePage } from '../index';
 
 declare var google;
 
@@ -17,27 +15,33 @@ declare var google;
   templateUrl: 'list.html'
 })
 export class ListPage implements AfterViewInit {
+
   @ViewChild(Nav) nav: Nav;
 
-  map: any;
-  service: any;
+  auxRaio: number = 500;
+  calcDistanceMsg = 'Buscando postos';
+  directionsService = new google.maps.DirectionsService;
+  filter: any;
+  fuelType: number = 0;
   gasStations: any = [];
   gasStationsList: any[] = [];
-  loading: any;
   gasStation: any;
-  latlngUser: LatLng;
-  raio: number = 800;
   isReloading = false;
-  loadingRoute = false; 
-  directionsService = new google.maps.DirectionsService;
+  latlngUser: LatLng;
+  loading: any;
+  loadingRoute = false;
+  map: any;
+  raio: number = 800;
+  rating: number;
+  service: any;
 
   constructor(
-    public navCtrl: NavController,
-    public modalCtrl: ModalController,
-    public navParams: NavParams,
-    public loadingCtrl: LoadingController,
     public alertCtrl: AlertController,
     public geolocation: Geolocation,
+    public loadingCtrl: LoadingController,
+    public modalCtrl: ModalController,
+    public navCtrl: NavController,
+    public navParams: NavParams,
     private firebaseService: FirebaseService,
   ) {
     this.presentLoadingDefault();
@@ -47,16 +51,19 @@ export class ListPage implements AfterViewInit {
     this.getCurrentLocation();
   }
 
-  doRefresh(refresher) {
+  doRefresh(refresher?) {
     this.gasStationsList = [];
     this.latlngUser = undefined;
     this.isReloading = true;
+    this.presentLoadingDefault();
     this.getCurrentLocation();
 
-    setTimeout(() => {
-      this.isReloading = false;
-      refresher.complete();
-    }, 2000);
+    if (refresher) {
+      setTimeout(() => {
+        this.isReloading = false;
+        refresher.complete();
+      }, 2000);
+    }
   }
 
   openGasStation(gasStation: any) {
@@ -68,10 +75,6 @@ export class ListPage implements AfterViewInit {
       gasStations: this.gasStationsList,
       userLocation: this.latlngUser
     });
-  }
-
-  openMap() {
-    this.navCtrl.push(HomePage, {gasStations: this.gasStationsList, backIsHide: true});
   }
 
   getCurrentLocation() {
@@ -104,39 +107,51 @@ export class ListPage implements AfterViewInit {
       }, (response, status) => {
         if (status == 'OK') {
           gasStation.distance = response.routes[0].legs[0].distance.value;
-          this.getPlaceDetails(gasStation.id);          
+          this.getPlaceDetails(gasStation.id);
         } else {
           console.log(status);
         }
 
         if (this.gasStationsList.length === this.gasStationsList.indexOf(gasStation) + 1) {
           if (gasStation.distance) {
-            this.gasStationsList = _.uniqBy(this.gasStationsList, 'distance');
-            this.gasStationsList = _.orderBy(this.gasStationsList, 'distance', 'asc'); 
-            this.loadingRoute = false;           
+            // this.gasStationsList = _.uniqBy(this.gasStationsList, 'distance');
+            if (this.auxRaio > 500) {
+              this.auxRaio = 500;
+              this.gasStationsList.length = 1;
+            } else {
+              this.gasStationsList = _.orderBy(this.gasStationsList, 'distance', 'asc');
+            }
+
+            this.loadingRoute = false;
           }
         }
       });
     });
-    this.loading.dismiss();    
+    this.loading.dismiss();
   }
 
   presentLoadingDefault() {
     this.loading = this.loadingCtrl.create({
-      content: 'Carregando postos'
+      content: this.calcDistanceMsg
     });
 
     this.loading.present();
   }
 
   nearbyGasStations() {
+    if (this.filter) {
+      this.raio = this.filter.distance;
+      this.fuelType = this.filter.gasType;
+      this.rating = this.filter.rating;
+    }
+
     this.map = new google.maps.Map(document.getElementById('map'));
 
     let params = {
-      location: {lat: this.latlngUser.lat, lng: this.latlngUser.lng},
+      location: { lat: this.latlngUser.lat, lng: this.latlngUser.lng },
       radius: this.raio,
       rankby: 'distance',
-      query: 'Postos de Gasolina Florianópolis',
+      query: 'Postos de Gasolina',
       type: 'gas_station',
       key: 'AIzaSyC4ac6cxMs7NqDfE7SWRqnJIlbg5PyhWcc'
     }
@@ -147,10 +162,15 @@ export class ListPage implements AfterViewInit {
 
   processResults(results, status, pagination) {
     if (status !== google.maps.places.PlacesServiceStatus.OK) {
+      this.auxRaio = this.auxRaio + 500;
+
+      setTimeout(() => {
+        this.findAtLeastOne();
+      }, 2000);
       return;
     } else {
-      for (let i = 0; i < results.length; i++) {
-        let place = results[i];
+      if (this.auxRaio > 500) {
+        let place = results[0];
         let type = '';
 
         if (place.name.toUpperCase().includes('IPIRANGA')) {
@@ -165,6 +185,13 @@ export class ListPage implements AfterViewInit {
 
         this.gasStationsList.push({
           id: place.place_id,
+          values: [
+            { type: 'GC', label: 'Gasolina comum', value: '3,97' },
+            { type: 'GA', label: 'Gasolina aditivada', value: '4,09' },
+            { type: 'DI', label: 'Diesel', value: '3,36' },
+            { type: 'ET', label: 'Etanol', value: '3,15' },
+            { type: 'GNV', label: 'Gás natural veicular', value: '0,0' }
+          ],
           name: place.name,
           location: place.formatted_address,
           type: type,
@@ -172,25 +199,58 @@ export class ListPage implements AfterViewInit {
           longitude: place.geometry.location.lng(),
         });
 
-        this.firebaseService.postGasStations(place);
+        this.calculateDistances(this.latlngUser);
+      } else {
+        for (let i = 0; i < results.length; i++) {
+          let place = results[i];
+          let type = '';
+
+          if (place.name.toUpperCase().includes('IPIRANGA')) {
+            type = 'Ipiranga';
+          } else if (place.name.toUpperCase().includes('SHELL')) {
+            type = 'Shell';
+          } else if (place.name.toUpperCase().toUpperCase().includes('BR') || place.name.toUpperCase().includes('PETROBRAS')) {
+            type = 'BR';
+          } else {
+            type = 'UNDEFINED';
+          }
+
+          this.gasStationsList.push({
+            id: place.place_id,
+            values: [
+              { type: 'GC', label: 'Gasolina comum', value: '3,97' },
+              { type: 'GA', label: 'Gasolina aditivada', value: '4,09' },
+              { type: 'DI', label: 'Diesel', value: '3,36' },
+              { type: 'ET', label: 'Etanol', value: '3,15' },
+              { type: 'GNV', label: 'Gás natural veicular', value: '0,0' }
+            ],
+            name: place.name,
+            location: place.formatted_address,
+            type: type,
+            latitude: place.geometry.location.lat(),
+            longitude: place.geometry.location.lng(),
+          });
+
+          // this.firebaseService.postGasStations(place);
+        }
+        pagination.nextPage();
+
+        this.gasStationsList = _.remove(this.gasStationsList, (g: any) => {
+          return _.includes(g.name, 'Posto') && !_.includes(g.name, 'Borracharia' || 'Mecânica');
+        });
+
+        setTimeout(() => {
+          this.calculateDistances(this.latlngUser);
+        }, 1200);
       }
-      pagination.nextPage();
     }
-
-    this.gasStationsList = _.remove(this.gasStationsList, (g: any) => {
-      return _.includes(g.name, 'Posto') && !_.includes(g.name, 'Borracharia' || 'Mecânica');
-    });
-
-    setTimeout(() => {
-      this.calculateDistances(this.latlngUser);
-    }, 1500);
   }
 
   getPlaceDetails(placeId: string) {
     let request = {
       placeId: placeId
     };
-    
+
     this.service.getDetails(request, this.processDetails.bind(this));
   }
 
@@ -203,26 +263,62 @@ export class ListPage implements AfterViewInit {
       let index = this.gasStationsList.indexOf(gas);
 
       if (index > 0) {
-        gas = _.assign(gas, { number: result.formatted_phone_number, address: result.address_components });        
+        gas = _.assign(gas, { number: result.formatted_phone_number, address: result.address_components });
         this.gasStationsList.splice(index, 1, gas);
       }
     }
   }
 
-  openFilter() {
-    let filterModal = this.modalCtrl.create(FilterPage);
-    filterModal.present();
+  findAtLeastOne() {
+    let params = {
+      location: {lat: this.latlngUser.lat, lng: this.latlngUser.lng},
+      radius: this.auxRaio,
+      rankby: 'distance',
+      type: 'gas_station',
+      key: 'AIzaSyC4ac6cxMs7NqDfE7SWRqnJIlbg5PyhWcc'
+    }
+
+    this.service = new google.maps.places.PlacesService(this.map);
+    this.service.textSearch(params, this.processResults.bind(this));
   }
 
   errorDetails(error: any) {
     let alert = this.alertCtrl.create({
       title: `Código: ${error.code}`,
       subTitle: error.message,
-      buttons: [ 'Dismiss'
-      ]
+      buttons: [ 'Dismiss' ]
     });
 
     alert.present();
+  }
+
+  applyFilter(data: any) {
+    return _.filter(this.gasStationsList, (gas: any) => {
+      return gas.type === data.type || gas.distance <= data.distance;
+    });
+  }
+
+  openFilter() {
+    let filterModal = this.modalCtrl.create(FilterPage);
+    filterModal.onDidDismiss(data => {
+      this.filter = data;
+      this.doRefresh();
+    });
+    filterModal.present();
+  }
+
+  changeFuel() {
+    let fuelModal = this.modalCtrl.create(ChooseTypePage);
+    fuelModal.onDidDismiss((data: number) => {
+      if (data) {
+        this.fuelType = data;
+      }
+    });
+    fuelModal.present();
+  }
+
+  openMap() {
+    this.navCtrl.push(HomePage, {gasStations: this.gasStationsList, backIsHide: true});
   }
 
 }

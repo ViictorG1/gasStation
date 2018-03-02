@@ -14,22 +14,28 @@
             </ion-list-header>
             <ion-item>
               <ion-select placeholder="Escolha" [(ngModel)]="filter.gasType" interface="popover">
-                <ion-option value="comum">Gasolina comum</ion-option>
-                <ion-option value="aditivada">Gasolina aditivada</ion-option>
-                <ion-option value="alcool">Álcool</ion-option>
-                <ion-option value="diesel">Diesel</ion-option>
+                <ion-option value="GC">Gasolina comum</ion-option>
+                <ion-option value="GA">Gasolina aditivada</ion-option>
+                <ion-option value="ET">Etanol</ion-option>
+                <ion-option value="DI">Diesel</ion-option>
                 <ion-option value="gnv">GNV</ion-option>
               </ion-select>
             </ion-item>
             <ion-list-header class="pt-10">
               Distância
-              <ion-badge item-end>{{ filter.distance }}km</ion-badge>              
+              <ion-badge item-end>{{ filter.distance }}km</ion-badge>
             </ion-list-header>
             <ion-item>
               <ion-range min="1" max="10" step="1" snaps="true" [(ngModel)]="filter.distance" color="primary">
                 <ion-label range-left>1km</ion-label>
                 <ion-label range-right>10km</ion-label>
               </ion-range>
+            </ion-item>
+            <ion-item>
+              <ion-list-header class="pt-10">
+                Avaliação
+              </ion-list-header>
+              <rating (update)="onRatingChange($event)" score="1" max="5"></rating>
             </ion-item>
           </ion-list>
         </ion-col>

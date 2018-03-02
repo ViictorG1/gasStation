@@ -12,7 +12,7 @@ import { ListPage } from '../pages/list/list';
 @Component({
   templateUrl: 'app.html'
 })
-export class MyApp {
+export class GasStationApp {
   @ViewChild(Nav) nav: Nav;
 
   rootPage: any = ListPage;
@@ -58,8 +58,25 @@ export class MyApp {
 
       const pushObject: PushObject = this.push.init(options);
 
+      pushObject.on('registration').subscribe((registration: any) => {
+        let pushToken = registration.registrationId;
+
+        let youralert = this.alertCtrl.create({
+          title: 'New Push notification',
+          message: pushToken
+        });
+        youralert.present();
+      });
+
+      pushObject.on('error').subscribe((error) => {
+        let youralert = this.alertCtrl.create({
+          title: 'New Push notification',
+          message: error.message
+        });
+        youralert.present();
+      });
+
       pushObject.on('notification').subscribe((notification: any) => {
-        console.log(notification)
         let youralert = this.alertCtrl.create({
           title: 'New Push notification',
           message: notification.message

@@ -35,7 +35,7 @@ export class HomePage {
       'assets/images/ipirangam.png',
       new google.maps.Size( 20, 27 ),
       new google.maps.Point( 0, 0 ),
-      new google.maps.Point( 10, 26 )
+      new google.maps.Point( 10, 27 )
     )
   };
   iconsShell = {
@@ -43,7 +43,7 @@ export class HomePage {
       'assets/images/shellm.png',
       new google.maps.Size( 20, 27 ),
       new google.maps.Point( 0, 0 ),
-      new google.maps.Point( 10, 26 )
+      new google.maps.Point( 10, 27 )
     )
   };
   iconsBr = {
@@ -51,7 +51,7 @@ export class HomePage {
       'assets/images/brm.png',
       new google.maps.Size( 20, 27 ),
       new google.maps.Point( 0, 0 ),
-      new google.maps.Point( 10, 26 )
+      new google.maps.Point( 10, 27 )
     )
   };
   iconsUndefined = {
@@ -59,15 +59,15 @@ export class HomePage {
       'assets/images/undefinedm.png',
       new google.maps.Size( 20, 27 ),
       new google.maps.Point( 0, 0 ),
-      new google.maps.Point( 10, 26 )
+      new google.maps.Point( 10, 27 )
     )
   };
   iconsUser = {
     gasStation: new google.maps.MarkerImage(
       'assets/images/user.png',
-      new google.maps.Size( 48, 48 ),
+      new google.maps.Size( 30, 30 ),
       new google.maps.Point( 0, 0 ),
-      new google.maps.Point( 25, 40 )
+      new google.maps.Point( 15, 15 )
     )
   };
 
@@ -103,7 +103,7 @@ export class HomePage {
     searchBox.addListener('place_changed', (a: any) => {
       let place = searchBox.getPlace();
       this.searchGasStations(place);
-      $('#pac-input').val('');      
+      $('#pac-input').val('');
     });
   }
 
@@ -165,12 +165,12 @@ export class HomePage {
       mapTypeControl: false
     });
 
-    this.initSearchComponent();
-
     this.makeMarker(
       this.userLocation,
       this.iconsUser.gasStation
     );
+
+    this.initSearchComponent();
 
     this.loading.dismiss();
 
@@ -213,7 +213,7 @@ export class HomePage {
 
       google.maps.event.addListener(marker, 'click', () => {
         this.addInfoWindow(gasStation);
-      });  
+      });
     } else {
       marker = new google.maps.Marker({
         position: position,
@@ -222,8 +222,6 @@ export class HomePage {
         title: 'Você'
       });
     }
-  
-    this.filteredGasStations.push(marker);
   }
 
   getMap() {
@@ -256,7 +254,7 @@ export class HomePage {
     if (this.searchButton) {
       this.searchButton = false;
     } else {
-      this.searchButton = true;      
+      this.searchButton = true;
     }
   }
 
@@ -273,18 +271,6 @@ export class HomePage {
 
     let bounds = circle.getBounds();
 
-    // if (this.gasStations) {
-    //   this.gasStations.forEach((gasStation: any) => {
-    //     let marker = new google.maps.Marker({
-    //       position: new LatLng(gasStation.latitude, gasStation.longitude)
-    //     });
-        
-    //     if (google.maps.geometry) {
-    //       let response: any = google.maps.geometry.spherical.computeDistanceBetween(marker.getPosition(), circle.getCenter()) <= circle.getRadius();
-    //     }
-    //   });
-    // }
-
     this.map.fitBounds(bounds);
   }
 
@@ -293,52 +279,3 @@ export class HomePage {
     this.filteredGasStations.length = 0;
   }
 }
-
- // CALCULATE AND DISPLAY ROUTE
-
- // icons = {
-  //   start: new google.maps.MarkerImage(
-  //   // URL
-  //   'assets/images/vol.png',
-  //   // (width,height)
-  //   new google.maps.Size( 48, 48 ),
-  //   // The origin point (x,y)
-  //   new google.maps.Point( 0, 0 ),
-  //   // The anchor point (x,y)
-  //   new google.maps.Point( 22, 32 )
-  //   ),
-  //   end: new google.maps.MarkerImage(
-  //   // URL
-  //   'http://i.imgur.com/svzzuiv.png',
-  //   // (width,height)
-  //   new google.maps.Size( 48, 48 ),
-  //   // The origin point (x,y)
-  //   new google.maps.Point( 0, 0 ),
-  //   // The anchor point (x,y)
-  //   new google.maps.Point( 25, 40 )
-  //   )
-  // };
-
-  // this.directionsDisplay.setMap(this.map);
-  // this.directionsDisplay.setOptions({
-  //   polylineOptions: {
-  //     strokeWeight: 3,
-  //     strokeOpacity: 0.9,
-  //     strokeColor: '#488AFF'
-  //   }
-  // , suppressMarkers: true });
-
-  // calculateAndDisplayRoute() {
-  //   this.directionsService.route({
-  //     origin: this.latlngUser,
-  //     destination: this.latilong,
-  //     travelMode: 'DRIVING',
-  //     unitSystem: google.maps.UnitSystem.METRIC
-  //   }, (response, status) => {
-  //     let leg = response.routes[0].legs[0];
-  //     let marker = this.makeMarker(leg.end_location, this.icons.end, this.gasStation);
-  //     this.filteredGasStations.push(marker);
-  //   });
-  // }
-
- // END CALCULATE AND DISPLAY ROUTE

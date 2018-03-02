@@ -12,6 +12,7 @@ export class FilterPage {
   filter: any = {
     gasType: '',
     distance: 1,
+    rating: 1
   };
   selectOptions: any = {
     interface: 'popover'
@@ -23,12 +24,16 @@ export class FilterPage {
   }
 
   dismiss(data) {
-    this.viewCtrl.dismiss(data);
+    data ? this.viewCtrl.dismiss(data) : this.viewCtrl.dismiss();
   }
 
   filterList() {
     this.filter.distance = this.filter.distance * 1000;
     this.dismiss(this.filter);
+  }
+
+  onRatingChange(rating: any) {
+    this.filter.rating = rating;
   }
 
 }

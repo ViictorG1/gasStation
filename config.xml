@@ -80,7 +80,6 @@
         <splash height="480" src="resources/ios/splash/Default~iphone.png" width="320" />
         <resource-file src="GoogleService-Info.plist" />
     </platform>
-    <engine name="android" spec="^6.2.2" />
     <plugin name="com-darryncampbell-cordova-plugin-intent" spec="0.0.14" />
     <plugin name="cordova-plugin-geolocation" spec="^2.4.3" />
     <plugin name="cordova-plugin-googlemaps" spec="git+https://github.com/mapsplugin/cordova-plugin-googlemaps.git#multiple_maps">
@@ -95,9 +94,10 @@
     <allow-navigation href="http://192.168.0.56:8100" />
     <plugin name="uk.co.workingedge.phonegap.plugin.launchnavigator" spec="^4.0.1" />
     <plugin name="cordova-plugin-splashscreen" spec="^4.0.3" />
-    <plugin name="phonegap-plugin-push" spec="~2.1.2">
-        <variable name="SENDER_ID" value="256624249194" />
-    </plugin>
     <plugin name="cordova-plugin-device" spec="^1.1.4" />
     <plugin name="cordova-plugin-headercolor" spec="^1.0.0" />
+    <plugin name="phonegap-plugin-push" spec="^2.1.2">
+        <variable name="SENDER_ID" value="256624249194" />
+    </plugin>
+    <engine name="android" spec="^6.3.0" />
 </widget>
