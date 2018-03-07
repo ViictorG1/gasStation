@@ -1,31 +1,40 @@
 <ion-content padding class="sample-modal-page">
   <div class="content-gas pb-10">
+    <ion-row [class.mb-20]="!editingPrice" class="text-center mt-10 p-10">
+      <ion-col col-12>
+        <span class="title-gas title">{{ gasStation.name | uppercase }}</span><br/><br/>
+        <span class="location-gas">{{ gasStation.location }}</span>
+      </ion-col>
+    </ion-row>
+    <ion-grid class="divider"></ion-grid>
     <ion-grid text-center padding-top class="grid-text">
-      <ion-row>
-        <ion-col col-12>
-          <span class="title-gas title">{{ gasStation.name | uppercase }}</span><br/>
-          <span class="location-gas">{{ gasStation.location }}</span>
-        </ion-col>
-      </ion-row>
       <ion-row class="values">
         <ion-col col-6 text-center>
-          <span class="price">
+          <span [class.adjust-label]="editingPrice.type === 'ga'" [hidden]="editingPrice.type === 'gc'" (click)="changeValue('gc', gasStation.values[0].value)" id="gc" class="price">
             <b>
               <span class="rs">R$</span>
               {{ gasStation.values[0].value }}
             </b>
           </span>
+          <ion-item *ngIf="editingPrice.type === 'gc'" class="input-price">
+            <ion-label color="primary" stacked>Atualizar valor</ion-label>
+            <ion-input type="text" [(ngModel)]="editingPrice.newValue" maxlength="4" (keyup)="convert($event)" (keyup.enter)="handleEnter()"></ion-input>
+          </ion-item>
         </ion-col>
         <ion-col col-6 text-center>
-          <span class="price">
+          <span [class.adjust-label]="editingPrice.type === 'gc'" [hidden]="editingPrice.type === 'ga'" (click)="changeValue('ga', gasStation.values[1].value)" id="ga" class="price">
             <b>
               <span class="rs">R$</span>
               {{ gasStation.values[1].value }}
             </b>
           </span>
+          <ion-item *ngIf="editingPrice.type === 'ga'" class="input-price">
+            <ion-label color="primary" stacked>Atualizar valor</ion-label>
+            <ion-input type="text" [(ngModel)]="editingPrice.newValue" maxlength="4" (keyup)="convert($event)" (keyup.enter)="handleEnter()"></ion-input>
+          </ion-item>
         </ion-col>
       </ion-row>
-      <ion-row>
+      <ion-row class="mb-20">
         <ion-col col-6 text-center>
           {{ gasStation.values[0].label }}
         </ion-col>
@@ -35,20 +44,28 @@
       </ion-row>
       <ion-row class="values">
         <ion-col col-6 text-center>
-          <span class="price">
+          <span [class.adjust-label]="editingPrice.type === 'et'" [hidden]="editingPrice.type === 'di'" (click)="changeValue('di', gasStation.values[2].value)" id="di" class="price">
             <b>
               <span class="rs">R$</span>
               {{ gasStation.values[2].value }}
             </b>
           </span>
+          <ion-item *ngIf="editingPrice.type === 'di'" class="input-price">
+            <ion-label color="primary" stacked>Atualizar valor</ion-label>
+            <ion-input type="text" [(ngModel)]="editingPrice.newValue" maxlength="4" (keyup)="convert($event)" (keyup.enter)="handleEnter()"></ion-input>
+          </ion-item>
         </ion-col>
         <ion-col col-6 text-center>
-          <span class="price">
+          <span [class.adjust-label]="editingPrice.type === 'di'" [hidden]="editingPrice.type === 'et'" (click)="changeValue('et', gasStation.values[3].value)" id="et" class="price">
             <b>
               <span class="rs">R$</span>
               {{ gasStation.values[3].value }}
             </b>
           </span>
+          <ion-item *ngIf="editingPrice.type === 'et'" class="input-price">
+            <ion-label color="primary" stacked>Atualizar valor</ion-label>
+            <ion-input type="text" [(ngModel)]="editingPrice.newValue" maxlength="4" (keyup)="convert($event)" (keyup.enter)="handleEnter()"></ion-input>
+          </ion-item>
         </ion-col>
       </ion-row>
       <ion-row>
@@ -61,24 +78,31 @@
       </ion-row>
     </ion-grid>
     <ion-grid class="divider"></ion-grid>
-    <ion-grid text-center padding-top class="grid-text">
+    <ion-grid text-center padding-top class="grid-text pb-0">
+      <ion-row>
+        <ion-col class="mt-15" col-12>
+          <span class="sub-title title">CONVENIÊNCIA</span><br/>
+        </ion-col>
+      </ion-row>
       <ion-row class="p-10">
-        <ion-col col-3>
+        <ion-col col-2>
           <img src='assets/icon/card.png'/>
         </ion-col>
-          <ion-col col-3>
-          <img src='assets/icon/store.png'/>
-        </ion-col>
-        <ion-col col-3>
+        <ion-col col-2>
           <img src='assets/icon/coffee.png'/>
         </ion-col>
-        <ion-col col-3>
+        <ion-col col-4>
+          <img src='assets/icon/store.png'/>
+        </ion-col>
+        <ion-col col-2>
           <img src='assets/icon/toilet.png'/>
         </ion-col>
-        <ion-col col-3>
+        <ion-col col-2>
           <img src='assets/icon/wifi.png'/>
         </ion-col>
       </ion-row>
+    </ion-grid>
+    <ion-grid text-center class="grid-text">
       <ion-row>
         <ion-col col-12>
           <span class="sub-title title">CONTATO</span><br/>

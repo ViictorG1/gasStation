@@ -19,6 +19,8 @@ export class HomePage {
   @ViewChild('map') mapElement: ElementRef;
 
   map: any;
+  service: any;
+  place: any;
   userLocation: any;
   gasStationLocation: any;
   listPage = { title: 'List', component: ListPage };
@@ -102,6 +104,8 @@ export class HomePage {
     });
     searchBox.addListener('place_changed', (a: any) => {
       let place = searchBox.getPlace();
+      this.place = place;
+      this.nearbyGasStations();
       this.searchGasStations(place);
       $('#pac-input').val('');
     });
@@ -150,6 +154,98 @@ export class HomePage {
           break;
         }
       });
+    }
+  }
+
+  nearbyGasStations() {
+    this.gasStations = [];
+
+    let params = {
+      location: { lat: this.place.geometry.location.lat(), lng: this.place.geometry.location.lng() },
+      radius: 1000,
+      rankby: 'distance',
+      type: 'gas_station',
+      key: 'AIzaSyC4ac6cxMs7NqDfE7SWRqnJIlbg5PyhWcc'
+    }
+
+    this.service = new google.maps.places.PlacesService(this.map);
+    this.service.nearbySearch(params, this.processResults.bind(this));
+  }
+
+  processResults(results, status, pagination) {
+    console.log(results);
+    if (status === "OK") {
+      for (let i = 0; i < results.length; i++) {
+        let place = results[i];
+        let type = '';
+
+        if (place.name.toUpperCase().includes('IPIRANGA')) {
+          type = 'Ipiranga';
+        } else if (place.name.toUpperCase().includes('SHELL')) {
+          type = 'Shell';
+        } else if (place.name.toUpperCase().toUpperCase().includes('BR') || place.name.toUpperCase().includes('PETROBRAS')) {
+          type = 'BR';
+        } else {
+          type = 'UNDEFINED';
+        }
+
+        this.gasStations.push({
+          id: place.id,
+          values: [
+            { type: 'GC', label: 'Gasolina comum', value: '3,97' },
+            { type: 'GA', label: 'Gasolina aditivada', value: '4,09' },
+            { type: 'DI', label: 'Diesel', value: '3,36' },
+            { type: 'ET', label: 'Etanol', value: '3,15' },
+            { type: 'GNV', label: 'Gás natural veicular', value: '0,0' }
+          ],
+          name: place.name,
+          location: place.vicinity,
+          type: type,
+          latitude: place.geometry.location.lat(),
+          longitude: place.geometry.location.lng(),
+          openNow: place.opening_hours ? place.opening_hours.open_now : true
+        });
+
+        if (i === results.length -1) {
+          this.gasStations.forEach((gasStation: any) => {
+            switch (gasStation.type) {
+              case 'Ipiranga':
+              this.makeMarker(
+                new LatLng(parseFloat(gasStation.latitude),
+                parseFloat(gasStation.longitude)),
+                this.iconsIpiranga.gasStation,
+                gasStation);
+              break;
+
+              case 'Shell':
+              this.makeMarker(
+                new LatLng(parseFloat(gasStation.latitude),
+                parseFloat(gasStation.longitude)),
+                this.iconsShell.gasStation,
+                gasStation);
+              break;
+
+              case 'BR':
+              this.makeMarker(
+                new LatLng(parseFloat(gasStation.latitude),
+                parseFloat(gasStation.longitude)),
+                this.iconsBr.gasStation,
+                gasStation);
+              break;
+
+              case 'UNDEFINED':
+              this.makeMarker(
+                new LatLng(parseFloat(gasStation.latitude),
+                parseFloat(gasStation.longitude)),
+                this.iconsUndefined.gasStation,
+                gasStation);
+              break;
+            }
+          });
+        }
+      }
+
+      pagination.nextPage();
     }
   }
 

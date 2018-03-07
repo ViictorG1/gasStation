@@ -2,11 +2,9 @@ import { Component, ViewChild, AfterViewInit } from '@angular/core';
 import { NavController, NavParams, Nav, ModalController, LoadingController, AlertController } from 'ionic-angular';
 import * as _ from 'lodash';
 
-import { FirebaseService } from '../firebase.service';
-
 import { LatLng } from '@ionic-native/google-maps';
 import { Geolocation } from '@ionic-native/geolocation';
-import { ChooseTypePage, FilterPage, HomePage } from '../index';
+import { FilterPage, HomePage } from '../index';
 
 declare var google;
 
@@ -18,22 +16,37 @@ export class ListPage implements AfterViewInit {
 
   @ViewChild(Nav) nav: Nav;
 
-  auxRaio: number = 500;
   calcDistanceMsg = 'Buscando postos';
-  directionsService = new google.maps.DirectionsService;
-  filter: any;
-  fuelType: number = 0;
+
   gasStations: any = [];
   gasStationsList: any[] = [];
   gasStation: any;
-  isReloading = false;
+
+  map: any;
   latlngUser: LatLng;
+  raio = 1000;
+  auxRaio = 500;
+  directionsService = new google.maps.DirectionsService;
+
+  isReloading = false;
   loading: any;
   loadingRoute = false;
-  map: any;
-  raio: number = 800;
+
+  filter: any;
   rating: number;
+  orderByAny: any = 'distance';
+
   service: any;
+
+  types = [
+    { type: 'GC', label: 'Gasolina comum', number: 0 },
+    { type: 'GA', label: 'Gasolina aditivada', number: 1 },
+    { type: 'DI', label: 'Diesel', number: 2 },
+    { type: 'ET', label: 'Etanol', number: 3 },
+    { type: 'GNV', label: 'Gás natural veicular', number: 4 }
+  ];
+  typeCounter = 1;
+  fuelType: any = { type: 'GC', label: 'Gasolina comum', number: 0 };
 
   constructor(
     public alertCtrl: AlertController,
@@ -41,8 +54,7 @@ export class ListPage implements AfterViewInit {
     public loadingCtrl: LoadingController,
     public modalCtrl: ModalController,
     public navCtrl: NavController,
-    public navParams: NavParams,
-    private firebaseService: FirebaseService,
+    public navParams: NavParams
   ) {
     this.presentLoadingDefault();
   }
@@ -119,7 +131,7 @@ export class ListPage implements AfterViewInit {
               this.auxRaio = 500;
               this.gasStationsList.length = 1;
             } else {
-              this.gasStationsList = _.orderBy(this.gasStationsList, 'distance', 'asc');
+              this.orderBy();
             }
 
             this.loadingRoute = false;
@@ -151,17 +163,16 @@ export class ListPage implements AfterViewInit {
       location: { lat: this.latlngUser.lat, lng: this.latlngUser.lng },
       radius: this.raio,
       rankby: 'distance',
-      query: 'Postos de Gasolina',
       type: 'gas_station',
       key: 'AIzaSyC4ac6cxMs7NqDfE7SWRqnJIlbg5PyhWcc'
     }
 
     this.service = new google.maps.places.PlacesService(this.map);
-    this.service.textSearch(params, this.processResults.bind(this));
+    this.service.nearbySearch(params, this.processResults.bind(this));
   }
 
   processResults(results, status, pagination) {
-    if (status !== google.maps.places.PlacesServiceStatus.OK) {
+    if (status !== "OK") {
       this.auxRaio = this.auxRaio + 500;
 
       setTimeout(() => {
@@ -184,19 +195,20 @@ export class ListPage implements AfterViewInit {
         }
 
         this.gasStationsList.push({
-          id: place.place_id,
+          id: place.id,
           values: [
-            { type: 'GC', label: 'Gasolina comum', value: '3,97' },
-            { type: 'GA', label: 'Gasolina aditivada', value: '4,09' },
-            { type: 'DI', label: 'Diesel', value: '3,36' },
-            { type: 'ET', label: 'Etanol', value: '3,15' },
+            { type: 'GC', label: 'Gasolina comum', value: '3,977' },
+            { type: 'GA', label: 'Gasolina aditivada', value: '4,099' },
+            { type: 'DI', label: 'Diesel', value: '3,369' },
+            { type: 'ET', label: 'Etanol', value: '3,159' },
             { type: 'GNV', label: 'Gás natural veicular', value: '0,0' }
           ],
           name: place.name,
-          location: place.formatted_address,
+          location: place.vicinity,
           type: type,
           latitude: place.geometry.location.lat(),
           longitude: place.geometry.location.lng(),
+          openNow: place.opening_hours ? place.opening_hours.open_now : true
         });
 
         this.calculateDistances(this.latlngUser);
@@ -216,7 +228,7 @@ export class ListPage implements AfterViewInit {
           }
 
           this.gasStationsList.push({
-            id: place.place_id,
+            id: place.id,
             values: [
               { type: 'GC', label: 'Gasolina comum', value: '3,97' },
               { type: 'GA', label: 'Gasolina aditivada', value: '4,09' },
@@ -225,14 +237,15 @@ export class ListPage implements AfterViewInit {
               { type: 'GNV', label: 'Gás natural veicular', value: '0,0' }
             ],
             name: place.name,
-            location: place.formatted_address,
+            location: place.vicinity,
             type: type,
             latitude: place.geometry.location.lat(),
             longitude: place.geometry.location.lng(),
+            openNow: place.opening_hours ? place.opening_hours.open_now : true
           });
 
-          // this.firebaseService.postGasStations(place);
         }
+
         pagination.nextPage();
 
         this.gasStationsList = _.remove(this.gasStationsList, (g: any) => {
@@ -308,17 +321,19 @@ export class ListPage implements AfterViewInit {
   }
 
   changeFuel() {
-    let fuelModal = this.modalCtrl.create(ChooseTypePage);
-    fuelModal.onDidDismiss((data: number) => {
-      if (data) {
-        this.fuelType = data;
-      }
-    });
-    fuelModal.present();
+    if (this.typeCounter === 4) {
+      this.typeCounter = 0;
+    }
+    this.fuelType = this.types[this.typeCounter++];
+  }
+
+  orderBy(orderByAny?: string) {
+    orderByAny ? this.orderByAny = orderByAny : this.orderByAny;
+    this.gasStationsList = _.orderBy(this.gasStationsList, this.orderByAny, 'asc');
   }
 
   openMap() {
-    this.navCtrl.push(HomePage, {gasStations: this.gasStationsList, backIsHide: true});
+    this.navCtrl.push(HomePage, { gasStations: this.gasStationsList, backIsHide: true });
   }
 
 }

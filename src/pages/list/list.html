@@ -1,17 +1,27 @@
 <ion-header>
   <ion-navbar color="primary">
-    <ion-title>GasBuster</ion-title>
+    <div class="w-100 order-by-container">
+      <ion-item class="order-by">
+        <ion-select placeholder="Escolha" (ngModelChange)="orderBy($event)" [(ngModel)]="orderByAny" interface="popover">
+          <ion-option value="values[fuelType.number].value">Preço</ion-option>
+          <ion-option value="distance">Distancia</ion-option>
+          <ion-option value="type">Bandeira</ion-option>
+        </ion-select>
+      </ion-item>
+    </div>
     <ion-buttons left>
       <!-- <button (click)="openFilter()" ion-button icon-only>
         <ion-icon name="funnel"></ion-icon>
       </button> -->
-      <button (click)="changeFuel()" ion-button icon-only>
-        <ion-icon name="list"></ion-icon>
+      <button (click)="changeFuel()" ion-button icon-left>
+        <ion-icon name="shuffle"></ion-icon>
+         {{ fuelType.type }}
       </button>
     </ion-buttons>
     <ion-buttons right>
-      <button (click)="openMap()" ion-button icon-only>
+      <button (click)="openMap()" ion-button icon-left>
         <ion-icon name="map"></ion-icon>
+         Mapa
       </button>
     </ion-buttons>
   </ion-navbar>
@@ -26,10 +36,9 @@
   </ion-refresher>
   <div [hidden]="gasStations.length === undefined" class="founded-list text-center">
     <div *ngIf="!loadingRoute">
-      <span *ngIf="loading && !gasStationsList.length && auxRaio === 500" class="w-100">Buscando postos a {{ this.raio | transformDistance }}</span>
-      <span *ngIf="loading && !gasStationsList.length && auxRaio !== 500" class="w-100">Buscando postos a {{ this.auxRaio | transformDistance }}</span>
+      <span *ngIf="loading && !gasStationsList.length && auxRaio === 500" class="w-100">Buscando postos em um raio de {{ this.raio | transformDistance }}</span>
+      <span *ngIf="loading && !gasStationsList.length && auxRaio !== 500" class="w-100">Buscando postos em um raio de {{ this.auxRaio | transformDistance }}</span>
       <span *ngIf="gasStationsList.length >= 1" class="w-100">Postos na sua região.</span>
-      <!-- <span *ngIf="gasStationsList.length === 0 && !loading" class="w-100">Infelizmente não foi encontrado nenhum posto dentre o raio de {{ this.raio | transformDistance }}. Você deseja encontrar o que .</span> -->
     </div>
     <span *ngIf="loadingRoute">Calculando distâncias</span>
   </div>
@@ -50,14 +59,14 @@
             </table>
           </td>
           <td class="w-80 text-gas">
-            <h3><b>{{ ((gasStation.name.length>25)? (gasStation.name | slice:0:25)+'...':(gasStation.name)) | uppercase }}</b></h3>
-            <p>{{ (gasStation.location.length>30)? (gasStation.location | slice:0:30)+'...':(gasStation.location) }}</p>
+            <h3><b>{{ ((gasStation.name.length > 25)? (gasStation.name | slice:0:25)+'...':(gasStation.name)) | uppercase }}</b></h3>
+            <p>{{ (gasStation.location.length > 30)? (gasStation.location | slice:0:30)+'...':(gasStation.location) }}</p>
           </td>
           <td class="w-10 pr-5">
             <table class="pull-right text-center">
               <tr>
                 <td>
-                  <h2><b><span class="rs">R$ </span>{{ gasStation.values[fuelType].value }} {{ gasStation.values[fuelType].type }}</b></h2>
+                  <h2><b><span class="rs">R$ </span>{{ gasStation.values[fuelType.number].value }} {{ gasStation.values[fuelType.number].type }}</b></h2>
                 </td>
               </tr>
               <tr>

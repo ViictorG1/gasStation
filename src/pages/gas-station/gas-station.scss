@@ -6,9 +6,20 @@
   font-size: 0.5em;
 }
 
-.values {
-  padding-top: 30px;
+.input-price {
+  padding: 0px 10px !important;
 }
+
+.adjust-label {
+  position: absolute !important;
+  width: 100%;
+  left: 0;
+  bottom: 10px;
+}
+
+// .values {
+//   padding-top: 30px;
+// }
 
 ion-modal {
   ion-content {
