@@ -114,4 +114,8 @@ export class GasStationPage implements AfterViewInit {
 
     alert.present();
   }
+
+  closeGasStation() {
+    this.navCtrl.pop();
+  }
 }

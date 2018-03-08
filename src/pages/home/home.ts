@@ -173,7 +173,6 @@ export class HomePage {
   }
 
   processResults(results, status, pagination) {
-    console.log(results);
     if (status === "OK") {
       for (let i = 0; i < results.length; i++) {
         let place = results[i];
@@ -266,9 +265,10 @@ export class HomePage {
       this.iconsUser.gasStation
     );
 
+    this.loading.dismiss();
+
     this.initSearchComponent();
 
-    this.loading.dismiss();
 
     if (this.gasStation) {
       this.loadAllGasStations();

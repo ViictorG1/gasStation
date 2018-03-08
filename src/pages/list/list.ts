@@ -1,10 +1,13 @@
-import { Component, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, ViewChild, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { NavController, NavParams, Nav, ModalController, LoadingController, AlertController } from 'ionic-angular';
+import { Observable } from 'rxjs/Observable';
+import { Observer } from 'rxjs/Observer';
+import 'rxjs/Rx';
 import * as _ from 'lodash';
 
 import { LatLng } from '@ionic-native/google-maps';
 import { Geolocation } from '@ionic-native/geolocation';
-import { FilterPage, HomePage } from '../index';
+import { HomePage } from '../index';
 
 declare var google;
 
@@ -26,6 +29,7 @@ export class ListPage implements AfterViewInit {
   latlngUser: LatLng;
   raio = 1000;
   auxRaio = 500;
+  trying = 0;
   directionsService = new google.maps.DirectionsService;
 
   isReloading = false;
@@ -45,7 +49,7 @@ export class ListPage implements AfterViewInit {
     { type: 'ET', label: 'Etanol', number: 3 },
     { type: 'GNV', label: 'Gás natural veicular', number: 4 }
   ];
-  typeCounter = 1;
+  typeCounter = 4;
   fuelType: any = { type: 'GC', label: 'Gasolina comum', number: 0 };
 
   constructor(
@@ -54,7 +58,8 @@ export class ListPage implements AfterViewInit {
     public loadingCtrl: LoadingController,
     public modalCtrl: ModalController,
     public navCtrl: NavController,
-    public navParams: NavParams
+    public navParams: NavParams,
+    private cd: ChangeDetectorRef
   ) {
     this.presentLoadingDefault();
   }
@@ -67,6 +72,8 @@ export class ListPage implements AfterViewInit {
     this.gasStationsList = [];
     this.latlngUser = undefined;
     this.isReloading = true;
+    this.typeCounter = 4;
+    this.trying = 0;
     this.presentLoadingDefault();
     this.getCurrentLocation();
 
@@ -95,50 +102,105 @@ export class ListPage implements AfterViewInit {
       this.latlngUser = latlngUser;
       this.nearbyGasStations();
     }).catch((error) => {
-      let alert = this.alertCtrl.create({
-        title: 'Erro!',
-        subTitle: `Ocorreu um erro ao tentar buscar a sua localização. Código: ${error.code} | ${error.message}`,
-        buttons: [
-          { text: 'Tente novamente', handler: data => { this.getCurrentLocation() },},
-          { text: 'Continuar sem localização'}
-        ]
-      });
+      if ((error.code === 3) && (this.trying !== 3)) {
+        this.getCurrentLocation();
+        this.trying++;
+      } else {
+        let alert = this.alertCtrl.create({
+          title: 'Erro!',
+          subTitle: `Ocorreu um erro ao tentar buscar a sua localização. Código: ${error.code} | ${error.message}`,
+          buttons: [
+            { text: 'Tente novamente', handler: data => { this.getCurrentLocation() },},
+            { text: 'Continuar sem localização'}
+          ]
+        });
 
-      alert.present();
+        alert.present();
+      }
     });
   }
 
   calculateDistances(latlngUser: any) {
     this.loadingRoute = true;
 
-    this.gasStationsList.forEach((gasStation: any) => {
-      this.directionsService.route({
-        origin: latlngUser,
-        destination: new LatLng(gasStation.latitude, gasStation.longitude),
-        travelMode: 'DRIVING'
-      }, (response, status) => {
-        if (status == 'OK') {
-          gasStation.distance = response.routes[0].legs[0].distance.value;
-          this.getPlaceDetails(gasStation.id);
-        } else {
-          console.log(status);
-        }
-
-        if (this.gasStationsList.length === this.gasStationsList.indexOf(gasStation) + 1) {
-          if (gasStation.distance) {
-            // this.gasStationsList = _.uniqBy(this.gasStationsList, 'distance');
-            if (this.auxRaio > 500) {
-              this.auxRaio = 500;
-              this.gasStationsList.length = 1;
-            } else {
-              this.orderBy();
-            }
-
-            this.loadingRoute = false;
-          }
-        }
+    let observableGasStations = Observable.create((observer: Observer<any>) => {
+      this.gasStationsList.forEach((gasStation: any) => {
+        this.directionsService.route({
+          origin: latlngUser,
+          destination: new LatLng(gasStation.latitude, gasStation.longitude),
+          travelMode: 'DRIVING'
+        }, (response, status) => {
+          gasStation.distance = response.routes[0].legs[0].distance.value
+          observer.next(gasStation);
+        });
       });
     });
+
+    observableGasStations.subscribe((gasStation: any) => {
+      this.cd.detectChanges();
+
+      let index = this.gasStationsList.indexOf(gasStation);
+
+      if (index >= 0) {
+        if (index + 1 === this.gasStationsList.length) {
+          this.gasStationsList.forEach((gasStation: any) => {
+            this.getPlaceDetails(gasStation.id);
+          });
+        }
+      }
+    });
+
+    // Observable.from(this.gasStationsList)
+    //   .forEach((gasStation: any) => {
+    //     let observable = Observable.create((observer: Observer<any>) => {
+    //       this.directionsService.route({
+    //         origin: latlngUser,
+    //         destination: new LatLng(gasStation.latitude, gasStation.longitude),
+    //         travelMode: 'DRIVING'
+    //       }, (response, status) => {
+    //         if (status == 'OK') {
+    //           gasStation.distance = response.routes[0].legs[0].distance.value;
+    //           observer.next(gasStation);
+
+    //           let index = this.gasStationsList.indexOf(gasStation);
+
+    //           if (index >= 0) {
+    //             this.gasStationsList = this.gasStationsList.splice(index, 1, gasStation);
+
+    //             if (index + 1 === this.gasStationsList.length) {
+    //               if (gasStation.distance) {
+    //                 console.log('EAE');
+    //                 observer.complete();
+    //               }
+    //             }
+    //           }
+    //         } else {
+    //           console.log(status);
+    //         }
+    //       });
+    //     });
+
+    //     observable.subscribe((gasStation: any) => {
+    //       this.loadingRoute = false;
+    //     },
+    //     () => {},
+    //     () => {
+    //       if (this.auxRaio > 500) {
+    //         this.auxRaio = 500;
+    //         this.gasStationsList.length = 1;
+    //       } else {
+    //         setTimeout(() => {
+    //           this.changeFuel();
+    //         }, 2500);
+    //       }
+    //     });
+    //   })
+    //   .then(() => {
+    //     this.gasStationsList.forEach((gasStation: any) => {
+    //       this.getPlaceDetails(gasStation.id);
+    //     });
+    //   });
+
     this.loading.dismiss();
   }
 
@@ -195,7 +257,7 @@ export class ListPage implements AfterViewInit {
         }
 
         this.gasStationsList.push({
-          id: place.id,
+          id: place.place_id,
           values: [
             { type: 'GC', label: 'Gasolina comum', value: '3,977' },
             { type: 'GA', label: 'Gasolina aditivada', value: '4,099' },
@@ -205,6 +267,7 @@ export class ListPage implements AfterViewInit {
           ],
           name: place.name,
           location: place.vicinity,
+          distance: 0,
           type: type,
           latitude: place.geometry.location.lat(),
           longitude: place.geometry.location.lng(),
@@ -228,7 +291,7 @@ export class ListPage implements AfterViewInit {
           }
 
           this.gasStationsList.push({
-            id: place.id,
+            id: place.place_id,
             values: [
               { type: 'GC', label: 'Gasolina comum', value: '3,97' },
               { type: 'GA', label: 'Gasolina aditivada', value: '4,09' },
@@ -237,6 +300,7 @@ export class ListPage implements AfterViewInit {
               { type: 'GNV', label: 'Gás natural veicular', value: '0,0' }
             ],
             name: place.name,
+            distance: 0,
             location: place.vicinity,
             type: type,
             latitude: place.geometry.location.lat(),
@@ -303,21 +367,6 @@ export class ListPage implements AfterViewInit {
     });
 
     alert.present();
-  }
-
-  applyFilter(data: any) {
-    return _.filter(this.gasStationsList, (gas: any) => {
-      return gas.type === data.type || gas.distance <= data.distance;
-    });
-  }
-
-  openFilter() {
-    let filterModal = this.modalCtrl.create(FilterPage);
-    filterModal.onDidDismiss(data => {
-      this.filter = data;
-      this.doRefresh();
-    });
-    filterModal.present();
   }
 
   changeFuel() {

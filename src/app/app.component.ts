@@ -30,7 +30,6 @@ export class GasStationApp {
   ) {
     this.initializeApp();
 
-    // used for an example of ngFor and navigation
     this.pages = [
       { title: 'Ínicio', component: HomePage },
       { title: 'Lista', component: ListPage }
@@ -44,6 +43,7 @@ export class GasStationApp {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
 
+      console.log(this.device.uuid);
       const options: PushOptions = {
         android: { senderID: '256624249194' },
         ios: {
@@ -58,37 +58,35 @@ export class GasStationApp {
 
       const pushObject: PushObject = this.push.init(options);
 
-      pushObject.on('registration').subscribe((registration: any) => {
-        let pushToken = registration.registrationId;
+      // pushObject.on('registration').subscribe((registration: any) => {
+      //   let pushToken = registration.registrationId;
 
-        let youralert = this.alertCtrl.create({
-          title: 'New Push notification',
-          message: pushToken
-        });
-        youralert.present();
-      });
+      //   let youralert = this.alertCtrl.create({
+      //     title: 'New Push notification',
+      //     message: pushToken
+      //   });
+      //   youralert.present();
+      // });
 
-      pushObject.on('error').subscribe((error) => {
-        let youralert = this.alertCtrl.create({
-          title: 'New Push notification',
-          message: error.message
-        });
-        youralert.present();
-      });
+      // pushObject.on('error').subscribe((error) => {
+      //   let youralert = this.alertCtrl.create({
+      //     title: 'New Push notification',
+      //     message: error.message
+      //   });
+      //   youralert.present();
+      // });
 
-      pushObject.on('notification').subscribe((notification: any) => {
-        let youralert = this.alertCtrl.create({
-          title: 'New Push notification',
-          message: notification.message
-        });
-        youralert.present();
-      });
+      // pushObject.on('notification').subscribe((notification: any) => {
+      //   let youralert = this.alertCtrl.create({
+      //     title: 'New Push notification',
+      //     message: notification.message
+      //   });
+      //   youralert.present();
+      // });
     });
   }
 
   openPage(page) {
-    // Reset the content nav to have just this page
-    // we wouldn't want the back button to show in this scenario
     this.nav.setRoot(page.component);
   }
 }
