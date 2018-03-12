@@ -1,4 +1,5 @@
 import { Component, ViewChild, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Storage } from '@ionic/storage';
 import { NavController, NavParams, Nav, ModalController, LoadingController, AlertController } from 'ionic-angular';
 import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs/Observer';
@@ -8,6 +9,8 @@ import * as _ from 'lodash';
 import { LatLng } from '@ionic-native/google-maps';
 import { Geolocation } from '@ionic-native/geolocation';
 import { HomePage } from '../index';
+
+import { IntroPage } from '../../pages/intro/intro';
 
 declare var google;
 
@@ -59,13 +62,24 @@ export class ListPage implements AfterViewInit {
     public modalCtrl: ModalController,
     public navCtrl: NavController,
     public navParams: NavParams,
+    public storage: Storage,
     private cd: ChangeDetectorRef
   ) {
-    this.presentLoadingDefault();
+  }
+
+  ionViewDidLoad() {
+    this.storage.get('intro-done').then(done => {
+      if (!done) {
+        this.storage.set('intro-done', true);
+        this.navCtrl.setRoot(IntroPage);
+      } else {
+        this.presentLoadingDefault();
+        this.getCurrentLocation();
+      }
+    });
   }
 
   ngAfterViewInit() {
-    this.getCurrentLocation();
   }
 
   doRefresh(refresher?) {

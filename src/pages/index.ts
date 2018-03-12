@@ -3,3 +3,4 @@ export * from './home/home';
 export * from './list/list';
 export * from './pipes/index';
 export * from './components/index';
+export * from './intro/intro';
