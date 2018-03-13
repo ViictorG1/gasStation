@@ -1,4 +1,4 @@
-import { Component, ViewChild, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Component, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { NavController, NavParams, Nav, ModalController, LoadingController, AlertController } from 'ionic-angular';
 import { Observable } from 'rxjs/Observable';
@@ -18,7 +18,7 @@ declare var google;
   selector: 'page-list',
   templateUrl: 'list.html'
 })
-export class ListPage implements AfterViewInit {
+export class ListPage {
 
   @ViewChild(Nav) nav: Nav;
 
@@ -52,7 +52,7 @@ export class ListPage implements AfterViewInit {
     { type: 'ET', label: 'Etanol', number: 3 },
     { type: 'GNV', label: 'Gás natural veicular', number: 4 }
   ];
-  typeCounter = 4;
+  typeCounter = 0;
   fuelType: any = { type: 'GC', label: 'Gasolina comum', number: 0 };
 
   constructor(
@@ -79,14 +79,11 @@ export class ListPage implements AfterViewInit {
     });
   }
 
-  ngAfterViewInit() {
-  }
-
   doRefresh(refresher?) {
     this.gasStationsList = [];
     this.latlngUser = undefined;
     this.isReloading = true;
-    this.typeCounter = 4;
+    this.typeCounter = 0;
     this.trying = 0;
     this.presentLoadingDefault();
     this.getCurrentLocation();
@@ -362,7 +359,7 @@ export class ListPage implements AfterViewInit {
 
   findAtLeastOne() {
     let params = {
-      location: {lat: this.latlngUser.lat, lng: this.latlngUser.lng},
+      location: { lat: this.latlngUser.lat, lng: this.latlngUser.lng },
       radius: this.auxRaio,
       rankby: 'distance',
       type: 'gas_station',
@@ -384,10 +381,12 @@ export class ListPage implements AfterViewInit {
   }
 
   changeFuel() {
-    if (this.typeCounter === 4) {
+    if (this.typeCounter === 3) {
       this.typeCounter = 0;
     }
-    this.fuelType = this.types[this.typeCounter++];
+    this.typeCounter += 1;
+    this.fuelType = this.types[this.typeCounter];
+    console.log(this.fuelType);
   }
 
   orderBy(orderByAny?: string) {

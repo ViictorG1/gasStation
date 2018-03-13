@@ -162,7 +162,7 @@ export class HomePage {
 
     let params = {
       location: { lat: this.place.geometry.location.lat(), lng: this.place.geometry.location.lng() },
-      radius: 1000,
+      radius: 1500,
       rankby: 'distance',
       type: 'gas_station',
       key: 'AIzaSyC4ac6cxMs7NqDfE7SWRqnJIlbg5PyhWcc'

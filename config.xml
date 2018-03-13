@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.ionic.gasin" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.ionic.gasin" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Gasin</name>
-    <description>An awesome Ionic/Cordova app.</description>
-    <author email="hi@ionicframework" href="http://ionicframework.com/">Ionic Framework Team</author>
+    <description>Escolha a melhor opção.</description>
+    <author email="gasin@gasin.com.br" href="http://gasin.com.br/">Gasin Team</author>
     <content src="index.html" />
     <access origin="*" />
     <allow-navigation href="http://ionic.local/*" />
@@ -78,7 +78,6 @@
         <splash height="1024" src="resources/ios/splash/Default-Portrait~ipad.png" width="768" />
         <splash height="960" src="resources/ios/splash/Default@2x~iphone.png" width="640" />
         <splash height="480" src="resources/ios/splash/Default~iphone.png" width="320" />
-        <resource-file src="GoogleService-Info.plist" />
     </platform>
     <plugin name="com-darryncampbell-cordova-plugin-intent" spec="0.0.14" />
     <plugin name="cordova-plugin-geolocation" spec="^2.4.3" />

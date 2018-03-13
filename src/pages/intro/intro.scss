@@ -1,3 +1,54 @@
 page-intro {
+  h1 {
+    padding-top: 10px;
+    color: white;
+  }
 
+  p {
+    font-size: 16px;
+    width: 80%;
+    display: inline-block;
+    color: white;
+  }
+
+  .first-page {
+    background-color: #629aff;
+
+    img {
+      border-radius: 10%;
+      width: 50%;
+      height: auto;
+      box-shadow: 2px 2px 2px #25509e;
+    }
+  }
+
+  .second-page {
+    background-color: #4879e0;
+
+    img {
+      border-radius: 10%;
+      width: 50%;
+      height: auto;
+      box-shadow: 2px 2px 2px #25509e;
+    }
+  }
+
+  .third-page {
+    background-color: #3a6cd8;
+
+    h1 {
+      padding-top: 0px !important;
+    }
+
+    img {
+      border-radius: 10%;
+      width: 45%;
+      height: auto;
+      box-shadow: 2px 2px 2px #25509e;
+    }
+
+    button {
+      padding-top: 5px;
+    }
+  }
 }

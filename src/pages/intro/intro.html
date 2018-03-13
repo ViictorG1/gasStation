@@ -1,22 +1,24 @@
 <ion-content>
-  <ion-slides pager="true" parallax="true" padding>
+  <ion-slides pager="true" parallax="true">
 
-    <ion-slide>
-      <img src="assets/img1.svg">
-      <h1>Welcome to my app!</h1>
+    <ion-slide class="first-page">
+      <img src="assets/images/first-page.svg" />
+      <h1>Bem vindo ao GASIN!</h1>
+      <p>Agora você pode ver a lista dos postos de gasolina do jeito que você quer! Ordene por <b>preço</b>, <b>bandeira</b> ou <b>distância</b> como você precisa.</p>
     </ion-slide>
 
-    <ion-slide>
-      <img src="assets/img2.svg">
-      <h1>All of the features</h1>
-      <p>Here's what you can do with the app...</p>
+    <ion-slide class="second-page">
+      <img src="assets/images/second-page.svg">
+      <h1>Qual o combustível?</h1>
+      <p>Toque no <b>ícone esquerdo</b> do menu até o combustível que você deseja saber o preço.</p>
     </ion-slide>
 
-    <ion-slide>
-      <img src="assets/img3.svg">
-      <h1>Get started now!</h1>
-      <button ion-button outline small (click)="navHome()">
-        Start using the app
+    <ion-slide class="third-page">
+      <img src="assets/images/third-page.svg">
+      <h1>Ajude a atualizar os valores</h1>
+      <p>Para manter o <b>Gasin</b> sempre atualizado, <b>colabore</b> alterando os valores, é fácil, toque no valor que você acredita que esteja <b>incorreto</b> e adicione o novo valor.</p>
+      <button color="light" ion-button outline small (click)="navHome()">
+        Ver a lista dos postos!
       </button>
     </ion-slide>
 

@@ -354,6 +354,16 @@ ion-content.content-md div.scroll-content {
 
 page-intro {
   .swiper-pagination-bullet-active {
-    background: #A713E8;
+    background: white;
   }
+}
+
+ion-popover > .popover-wrapper > .popover-content > .popover-viewport > ng-component > ion-list > ion-item > .item-inner > .input-wrapper > ion-label {
+  padding-left: 15px;
+}
+
+ion-popover > .popover-wrapper > .popover-content {
+  top: 45.5px !important;
+  left: 25% !important;
+  transform-origin: right top 0px !important;
 }
