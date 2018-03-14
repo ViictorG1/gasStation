@@ -1,10 +1,12 @@
-import { Component, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, ViewChild, ChangeDetectorRef, OnInit } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { NavController, NavParams, Nav, ModalController, LoadingController, AlertController } from 'ionic-angular';
 import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs/Observer';
 import 'rxjs/Rx';
 import * as _ from 'lodash';
+
+import { ContextService } from '../../app/shared/services/context.service';
 
 import { LatLng } from '@ionic-native/google-maps';
 import { Geolocation } from '@ionic-native/geolocation';
@@ -18,7 +20,7 @@ declare var google;
   selector: 'page-list',
   templateUrl: 'list.html'
 })
-export class ListPage {
+export class ListPage implements OnInit {
 
   @ViewChild(Nav) nav: Nav;
 
@@ -63,8 +65,27 @@ export class ListPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public storage: Storage,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private contextService: ContextService
   ) {
+  }
+
+  ngOnInit() {
+    this.contextService.contextChanges$.subscribe((context: any) => {
+      if (context) {
+        if (context.isLoggedIn) {
+          let alert = this.alertCtrl.create({
+            title: 'CONTEXT!',
+            subTitle: `${context.isLoggedIn} | ${context.password} | ${context.token} | ${context.client} | ${context.uid} | ${context.deviceId} | ${context.user.data.email}`,
+            buttons: [
+              { text: 'Continuar sem localização'}
+            ]
+          });
+
+          alert.present();
+        }
+      }
+    });
   }
 
   ionViewDidLoad() {

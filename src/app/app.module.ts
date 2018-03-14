@@ -2,6 +2,13 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { RatingComponent } from '../pages/index';
+import { HttpModule } from '@angular/http';
+
+// SERVICES
+
+import { AuthenticationService } from './shared/services/authentication.service';
+import { UserService } from './shared/services/user.service';
+import { ContextService } from './shared/services/context.service';
 
 // IONIC
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
@@ -37,7 +44,8 @@ import { GasStationApp } from './app.component';
     BrowserModule,
     IonicModule.forRoot(GasStationApp),
     IonicModule,
-    IonicStorageModule.forRoot()
+    IonicStorageModule.forRoot(),
+    HttpModule
   ],
   bootstrap: [ IonicApp ],
   entryComponents: [
@@ -48,14 +56,17 @@ import { GasStationApp } from './app.component';
     IntroPage
   ],
   providers: [
+    AuthenticationService,
+    ContextService,
+    Device,
+    Geolocation,
+    GoogleMaps,
+    HeaderColor,
+    LaunchNavigator,
     StatusBar,
     SplashScreen,
     Push,
-    Device,
-    HeaderColor,
-    GoogleMaps,
-    LaunchNavigator,
-    Geolocation,
+    UserService,
     { provide: ErrorHandler, useClass: IonicErrorHandler }
   ]
 })
