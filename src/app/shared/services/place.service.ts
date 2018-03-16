@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { RestClientService } from '../../shared/services/rest-client.service';
 
 @Injectable()
-export class UserService extends RestClientService {
+export class PlaceService extends RestClientService {
 
   private apiPath: string;
 
@@ -16,17 +16,15 @@ export class UserService extends RestClientService {
     this.apiPath = 'http://gasin.com.br';
   }
 
-  // getUsers(companyId: string): Observable<any[]> {
-  //   const queryParams: any = { domain: companyId };
-
-  //   return this.http
-  //     .get(this.collectionPath(), this.buildRequestOptions(queryParams))
-  //     .map((response: Response) => {
-  //       const users = this.extract<any[]>(response);
-  //       return _.sortBy(users, ['name']);
-  //     })
-  //     .catch(this.handleError);
-  // }
+  getPlaces(context: any): Observable<any[]> {
+    return this.http
+      .get(this.collectionPath(), this.buildRequestOptions({}, { uid: context.uid, client: context.client, token: context.token }))
+      .map((response: Response) => {
+        const places = this.extract<any[]>(response);
+        return places;
+      })
+      .catch(this.handleError);
+  }
 
   // getUser(id: number): Observable<any> {
   //   return this.http
@@ -37,14 +35,14 @@ export class UserService extends RestClientService {
   //     .catch(this.handleError);
   // }
 
-  createUser(data: any): Observable<any> {
+  createPlace(data: any, context: any): Observable<any> {
     const body = JSON.stringify(data);
 
     return this.http
-      .post(this.collectionPath(), body, this.buildRequestOptions())
+      .post(this.collectionPath(), body, this.buildRequestOptions({}, { uid: context.uid, client: context.client, token: context.token }))
       .map((response: Response) => {
         let responseData = this.extract<any>(response);
-        return this.unmarshalUser(responseData, data.password);
+        return responseData;
       })
       .catch(this.handleError);
   }
@@ -84,7 +82,7 @@ export class UserService extends RestClientService {
   //     .catch(this.handleError);
   // }
 
-  private marshalUser(user: any): any {
+  private marshalPlace(user: any): any {
     return {
       nickname: user.nickname,
       email: user.email,
@@ -92,7 +90,7 @@ export class UserService extends RestClientService {
     };
   }
 
-  private unmarshalUser(responseData: any, password: string): any {
+  private unmarshalPlaces(responseData: any, password: string): any {
     return {
       id: responseData.data.id,
       nickname: responseData.data.nickname,
@@ -103,7 +101,7 @@ export class UserService extends RestClientService {
 
 
   private collectionPath(): string {
-    return `${this.apiPath}/auth`;
+    return `${this.apiPath}/places`;
   }
 
 }

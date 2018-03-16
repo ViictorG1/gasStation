@@ -88,7 +88,6 @@ export class GasStationPage implements AfterViewInit {
               this.editingPrice.newValue += ',';
             } else {
               if (this.editingPrice.newValue.charAt(1) !== ',') {
-                console.log(this.editingPrice.newValue)
                 let txt = this.editingPrice.newValue.charAt(1);
                 let txt2 = '';
                 if (this.editingPrice.newValue.charAt(3)) {

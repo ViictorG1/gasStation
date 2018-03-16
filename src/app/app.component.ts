@@ -16,6 +16,7 @@ import { UserService } from './shared/services/user.service';
   templateUrl: 'app.html'
 })
 export class GasStationApp {
+
   @ViewChild(Nav) nav: Nav;
 
   rootPage: any = ListPage;
@@ -82,18 +83,20 @@ export class GasStationApp {
 
       if (context) {
         // IF HAVE A CONTEXT IN STORE
-        this.authenticationService
-        .login(context.user.data.email, context.password)
-        .subscribe((ctx: any) => {
-          this.authenticationService.getDevice(context.deviceId, ctx)
-            .subscribe((response: boolean) => {
-              // DEVICE FOUND
-            }, (error: Error) => {
-              // ERROR DEVICE
-            });
-        }, (error: any) => {
-          console.warn(error);
-        });
+        // this.authenticationService
+        // .login(context.user.data.email, context.password)
+        // .subscribe(() => {
+        //   let serialized = localStorage.getItem('br.com.gasin');
+        //   let ctxt = serialized ? JSON.parse(serialized) : undefined;
+          // this.authenticationService.getDevice(1, ctxt)
+          //   .subscribe((response: boolean) => {
+          //     // DEVICE FOUND
+          //   }, (error: Error) => {
+          //     // ERROR DEVICE
+          //   });
+        // }, (error: any) => {
+        //   console.warn(error);
+        // });
       } else {
         let password = this.generateRandomHash();
 
@@ -103,7 +106,10 @@ export class GasStationApp {
           this.authenticationService
             .login(user.email, user.password)
             .subscribe((context: any) => {
-              this.authenticationService.createDevice(device, pushToken, context)
+              let serialized = localStorage.getItem('br.com.gasin');
+              let ctxt = serialized ? JSON.parse(serialized) : undefined;
+
+              this.authenticationService.createDevice(device, pushToken, ctxt)
                 .subscribe((response: boolean) => {
                   // DEVICE CREATED
                 }, (error: Error) => {
@@ -140,6 +146,6 @@ export class GasStationApp {
   }
 
   generateRandomHash(): string {
-    return Math.random().toString(36).substring(4);
+    return Math.random().toString(36).substring(3);
   }
 }

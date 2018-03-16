@@ -7,6 +7,7 @@ import { RestClientService } from './rest-client.service';
 
 import { Storage } from '@ionic/storage';
 import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
+import { ContextService } from './context.service';
 
 @Injectable()
 export class AuthenticationService extends RestClientService {
@@ -19,32 +20,31 @@ export class AuthenticationService extends RestClientService {
   private context: any;
 
   constructor(
-    private http: Http
+    private http: Http,
+    private contextService: ContextService
   ) {
     super();
-    this.apiPath = 'http://gasin.com.br/auth';
-    this.apiDevicePath = 'http://gasin.com.br/devices';
+    this.apiPath = 'http://gasin.com.br';
     this.initContext();
   }
 
   login(email: string, password: string): Observable<boolean> {
     const body = JSON.stringify({ email: email, password: password });
-    const url = `${this.apiPath}/sign_in`;
 
     return this.http
-      .post(url, body, this.buildRequestOptions())
+      .post(this.collectionSignInPath(), body, this.buildRequestOptions())
       .map((response: Response) => {
         const res = response.headers;
         const user = this.extract<any>(response);
-
-        return {
+        this.saveContext({
           isLoggedIn: true,
           user: user,
           password: password,
           token: res.get('access-token'),
           client: res.get('client'),
           uid: res.get('uid')
-        };
+        });
+        return true;
       })
       .catch(this.handleError);
   }
@@ -54,12 +54,11 @@ export class AuthenticationService extends RestClientService {
   }
 
   createDevice(device: any, pushToken: string, context: any) {
-    // const body = JSON.stringify({ name: 'Moto G(4)', push_token: '', spec: JSON.stringify({ platform: 'Android', uuid: '46544874848', version: '6.6.2' })});
-    const body = JSON.stringify({ name: device.model, push_token: pushToken, spec: device.spec });
-    const url = `${this.apiDevicePath}`;
+    const body = JSON.stringify({ name: 'Moto G(4)', push_token: '', spec: JSON.stringify({ platform: 'Android', uuid: '46544874848', version: '6.6.2' })});
+    // const body = JSON.stringify({ name: device.model, push_token: pushToken, spec: device.spec });
 
     return this.http
-      .post(url, body, this.buildRequestOptions({}, { uid: context.uid, client: context.client, token: context.token }))
+      .post(this.collectionDevicePath(), body, this.buildRequestOptions({}, { uid: context.uid, client: context.client, token: context.token }))
       .map((response: Response) => {
         const data = this.extract<any>(response);
         this.saveContext(_.assign(context, { deviceId: data.id }));
@@ -69,13 +68,11 @@ export class AuthenticationService extends RestClientService {
   }
 
   getDevice(id: number, context: any) {
-    const url = `${this.apiDevicePath}/${id}`;
 
     return this.http
-      .get(url, this.buildRequestOptions({}, { uid: context.uid, client: context.client, token: context.token }))
+      .get(this.collectionDevicePath(), this.buildRequestOptions({}, { uid: context.uid, client: context.client, token: context.token }))
       .map((response: Response) => {
         const data = this.extract<any>(response);
-        console.log(data);
         return true;
       })
       .catch(this.handleError);
@@ -84,7 +81,7 @@ export class AuthenticationService extends RestClientService {
   private initContext() {
     const serialized = localStorage.getItem('br.com.gasin');
     this.context = serialized ? JSON.parse(serialized) : null;
-    console.log(this.context);
+
     this.isLoggedIn = !!this.context;
   }
 
@@ -93,10 +90,21 @@ export class AuthenticationService extends RestClientService {
     this.isLoggedIn = context.isLoggedIn;
     const serialized = JSON.stringify(context);
     localStorage.setItem('br.com.gasin', serialized);
+    if (context.deviceId) {
+      this.contextService.updateContext(this.context);
+    }
   }
 
   private cleanContext() {
     localStorage.removeItem('br.com.gasin');
+  }
+
+  private collectionSignInPath(): string {
+    return `${this.apiPath}/auth/sign_in`;
+  }
+
+  private collectionDevicePath(): string {
+    return `${this.apiPath}/devices`;
   }
 
 }

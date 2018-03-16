@@ -9,6 +9,8 @@ import { HttpModule } from '@angular/http';
 import { AuthenticationService } from './shared/services/authentication.service';
 import { UserService } from './shared/services/user.service';
 import { ContextService } from './shared/services/context.service';
+import { PlaceService } from './shared/services/place.service';
+import { InteractionService } from './shared/services/interaction.service';
 
 // IONIC
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
@@ -62,9 +64,11 @@ import { GasStationApp } from './app.component';
     Geolocation,
     GoogleMaps,
     HeaderColor,
+    InteractionService,
     LaunchNavigator,
     StatusBar,
     SplashScreen,
+    PlaceService,
     Push,
     UserService,
     { provide: ErrorHandler, useClass: IonicErrorHandler }

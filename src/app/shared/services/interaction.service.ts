@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { RestClientService } from '../../shared/services/rest-client.service';
 
 @Injectable()
-export class UserService extends RestClientService {
+export class InteractionService extends RestClientService {
 
   private apiPath: string;
 
@@ -16,14 +16,12 @@ export class UserService extends RestClientService {
     this.apiPath = 'http://gasin.com.br';
   }
 
-  // getUsers(companyId: string): Observable<any[]> {
-  //   const queryParams: any = { domain: companyId };
-
+  // getPlaces(context: any): Observable<any[]> {
   //   return this.http
-  //     .get(this.collectionPath(), this.buildRequestOptions(queryParams))
+  //     .get(this.apiPath, this.buildRequestOptions({}, { uid: context.uid, client: context.client, token: context.token }))
   //     .map((response: Response) => {
-  //       const users = this.extract<any[]>(response);
-  //       return _.sortBy(users, ['name']);
+  //       const places = this.extract<any[]>(response);
+  //       return places;
   //     })
   //     .catch(this.handleError);
   // }
@@ -37,14 +35,14 @@ export class UserService extends RestClientService {
   //     .catch(this.handleError);
   // }
 
-  createUser(data: any): Observable<any> {
+  createInteraction(data: any, context:any): Observable<any> {
     const body = JSON.stringify(data);
 
     return this.http
-      .post(this.collectionPath(), body, this.buildRequestOptions())
+      .post(this.collectionPath(context.deviceId), body, this.buildRequestOptions({}, { uid: context.uid, client: context.client, token: context.token }))
       .map((response: Response) => {
         let responseData = this.extract<any>(response);
-        return this.unmarshalUser(responseData, data.password);
+        return responseData;
       })
       .catch(this.handleError);
   }
@@ -84,26 +82,30 @@ export class UserService extends RestClientService {
   //     .catch(this.handleError);
   // }
 
-  private marshalUser(user: any): any {
-    return {
-      nickname: user.nickname,
-      email: user.email,
-      password: user.password
-    };
+  // private marshalPlace(user: any): any {
+  //   return {
+  //     nickname: user.nickname,
+  //     email: user.email,
+  //     password: user.password
+  //   };
+  // }
+
+  // private unmarshalPlaces(responseData: any, password: string): any {
+  //   return {
+  //     id: responseData.data.id,
+  //     nickname: responseData.data.nickname,
+  //     email: responseData.data.email,
+  //     password: password
+  //   };
+  // }
+
+
+  private collectionPath(deviceId: number): string {
+    return `${this.apiPath}/devices/${deviceId}/interactions`;
   }
 
-  private unmarshalUser(responseData: any, password: string): any {
-    return {
-      id: responseData.data.id,
-      nickname: responseData.data.nickname,
-      email: responseData.data.email,
-      password: password
-    };
-  }
-
-
-  private collectionPath(): string {
-    return `${this.apiPath}/auth`;
+  private elementPath(deviceId: number, id: number): string {
+    return `${this.collectionPath(deviceId)}/${id}`;
   }
 
 }

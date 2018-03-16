@@ -10,7 +10,7 @@
       </ion-item>
     </div>
     <ion-buttons left>
-      <button (click)="changeFuel()" ion-button icon-left>
+      <button class="change-fuel-icon" (click)="changeFuel()" ion-button icon-left>
         <ion-icon name="shuffle"></ion-icon>
          {{ fuelType.type }}
       </button>
@@ -36,7 +36,7 @@
       <span *ngIf="gasStationsList.length >= 1" class="w-100">Postos na sua região.</span>
     </div>
   </div>
-  <ion-list [hidden]="gasStations.length === undefined">
+  <ion-list>
     <ion-item ion-item *ngFor="let gasStation of gasStationsList" (click)="openGasStation(gasStation)">
       <table class="w-100">
         <tr>
@@ -53,14 +53,14 @@
             </table>
           </td>
           <td class="w-90 text-gas">
-            <h3><b>{{ ((gasStation.name.length > 25)? (gasStation.name | slice:0:25)+'...':(gasStation.name)) | uppercase }}</b></h3>
-            <p>{{ (gasStation.location.length > 35)? (gasStation.location | slice:0:35)+'...':(gasStation.location) }}</p>
+            <h3><b>{{ ((gasStation?.name.length > 25) ? (gasStation.name | slice:0:25)+'...':(gasStation.name)) | uppercase }}</b></h3>
+            <p>{{ (gasStation?.location.length > 35) ? (gasStation?.location | slice:0:35)+'...':(gasStation.location) }}</p>
           </td>
           <td class="w-5 pr-5">
             <table class="pull-right text-center">
               <tr>
                 <td>
-                  <h2><b><span class="rs">R$ </span>{{ gasStation.values[fuelType.number].value }} {{ gasStation.values[fuelType.number].type }}</b></h2>
+                  <!-- <h2><b><span class="rs">R$ </span>{{ gasStation.values[fuelType.number].value }} {{ gasStation.values[fuelType.number].type }}</b></h2> -->
                 </td>
               </tr>
               <tr>

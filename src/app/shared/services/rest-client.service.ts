@@ -52,7 +52,6 @@ export class RestClientService {
   protected getAuthToken() {
     let serialized = localStorage.getItem('br.com.gasin');
     let context = serialized ? JSON.parse(serialized) : null;
-    console.log(context)
 
     if (context) {
       return context.token;
