@@ -34,7 +34,7 @@ export class HomePage {
   directionsDisplay = new google.maps.DirectionsRenderer;
   iconsIpiranga = {
     gasStation: new google.maps.MarkerImage(
-      'assets/images/ipirangam.png',
+      'assets/images/ipirangam.svg',
       new google.maps.Size( 20, 27 ),
       new google.maps.Point( 0, 0 ),
       new google.maps.Point( 10, 27 )
@@ -42,7 +42,7 @@ export class HomePage {
   };
   iconsShell = {
     gasStation: new google.maps.MarkerImage(
-      'assets/images/shellm.png',
+      'assets/images/shellm.svg',
       new google.maps.Size( 20, 27 ),
       new google.maps.Point( 0, 0 ),
       new google.maps.Point( 10, 27 )
@@ -50,7 +50,7 @@ export class HomePage {
   };
   iconsBr = {
     gasStation: new google.maps.MarkerImage(
-      'assets/images/brm.png',
+      'assets/images/brm.svg',
       new google.maps.Size( 20, 27 ),
       new google.maps.Point( 0, 0 ),
       new google.maps.Point( 10, 27 )
@@ -58,7 +58,7 @@ export class HomePage {
   };
   iconsUndefined = {
     gasStation: new google.maps.MarkerImage(
-      'assets/images/undefinedm.png',
+      'assets/images/undefinedm.svg',
       new google.maps.Size( 20, 27 ),
       new google.maps.Point( 0, 0 ),
       new google.maps.Point( 10, 27 )
@@ -66,7 +66,7 @@ export class HomePage {
   };
   iconsUser = {
     gasStation: new google.maps.MarkerImage(
-      'assets/images/user.png',
+      'assets/images/user.svg',
       new google.maps.Size( 30, 30 ),
       new google.maps.Point( 0, 0 ),
       new google.maps.Point( 15, 15 )

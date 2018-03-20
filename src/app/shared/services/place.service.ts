@@ -16,9 +16,11 @@ export class PlaceService extends RestClientService {
     this.apiPath = 'http://gasin.com.br';
   }
 
-  getPlaces(context: any): Observable<any[]> {
+  getPlaces(context: any, ids: string[]): Observable<any[]> {
+    let url = `${this.collectionPath()}?ids=${encodeURIComponent(JSON.stringify(ids))}`;
+
     return this.http
-      .get(this.collectionPath(), this.buildRequestOptions({}, { uid: context.uid, client: context.client, token: context.token }))
+      .get(url, this.buildRequestOptions({}, { uid: context.uid, client: context.client, token: context.token }))
       .map((response: Response) => {
         const places = this.extract<any[]>(response);
         return places;

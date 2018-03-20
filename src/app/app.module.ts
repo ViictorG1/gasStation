@@ -15,6 +15,7 @@ import { InteractionService } from './shared/services/interaction.service';
 // IONIC
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { IonicStorageModule } from '@ionic/storage';
+import { BrMaskerModule } from 'brmasker-ionic-3';
 
 // NATIVE
 import { GoogleMaps } from '@ionic-native/google-maps';
@@ -44,6 +45,7 @@ import { GasStationApp } from './app.component';
   ],
   imports: [
     BrowserModule,
+    BrMaskerModule,
     IonicModule.forRoot(GasStationApp),
     IonicModule,
     IonicStorageModule.forRoot(),

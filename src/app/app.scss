@@ -347,8 +347,11 @@ ion-content.content-md div.scroll-content {
   filter: alpha(opacity=20);
   opacity: .2;
   position: absolute;
-  right: 5px;
-  top: 5px;
+  right: 0px;
+  width: 40px;
+  height: 40px;
+  padding: 0px;
+  z-index: 3000;
   background: white;
 }
 

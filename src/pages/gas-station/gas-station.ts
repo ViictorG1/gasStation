@@ -73,35 +73,6 @@ export class GasStationPage implements AfterViewInit {
     this.editingPrice.price = value;
   }
 
-  convert(event: any) {
-    if (event.key !== 'Backspace') {
-      if (event.key !== 'Delete') {
-        let elementChecker: string;
-        let format = /^([^0-9]*)$/;
-        let first = this.editingPrice.newValue.charAt(0);
-        elementChecker = event.target.value;
-        if (!!format.test(elementChecker)) {
-          this.editingPrice.newValue = elementChecker.slice(0, -1);
-        } else {
-          if (first) {
-            if (elementChecker === first) {
-              this.editingPrice.newValue += ',';
-            } else {
-              if (this.editingPrice.newValue.charAt(1) !== ',') {
-                let txt = this.editingPrice.newValue.charAt(1);
-                let txt2 = '';
-                if (this.editingPrice.newValue.charAt(3)) {
-                  txt2 = this.editingPrice.newValue.charAt(3);
-                }
-                this.editingPrice.newValue = this.editingPrice.newValue.slice(0, 1) + "," + txt + txt2;
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
   handleEnter() {
     this.presentAlert(this.editingPrice);
 
