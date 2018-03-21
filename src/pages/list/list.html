@@ -31,8 +31,7 @@
   </ion-refresher>
   <div [hidden]="gasStationsList.length" class="founded-list text-center">
     <div *ngIf="!loadingRoute">
-      <span *ngIf="loading && !gasStationsList.length && auxRaio === 500" class="w-100">Buscando postos em um raio de {{ this.raio | transformDistance }}</span>
-      <span *ngIf="loading && !gasStationsList.length && auxRaio !== 500" class="w-100">Buscando postos em um raio de {{ this.auxRaio | transformDistance }}</span>
+      <span class="w-100">Buscando postos em um raio de {{ ( (auxRaio === 500) ? raio : auxRaio ) | transformDistance }}</span>
       <span *ngIf="gasStationsList.length >= 1" class="w-100">Postos na sua região.</span>
     </div>
   </div>
@@ -53,8 +52,8 @@
             </table>
           </td>
           <td class="w-90 text-gas">
-            <h3><b>{{ ((gasStation?.name.length > 25) ? (gasStation.name | slice:0:25)+'...':(gasStation.name)) | uppercase }}</b></h3>
-            <p>{{ (gasStation?.location.length > 35) ? (gasStation?.location | slice:0:35)+'...':(gasStation.location) }}</p>
+            <h3><b>{{ (gasStation?.name ? ((gasStation.name.length > 25) ? ((gasStation?.name | slice:0:25) | uppercase)+'...' : (gasStation.name) | uppercase) : '') }}</b></h3>
+            <p>{{ (gasStation?.location ? (gasStation.location.length > 35) ? (gasStation?.location | slice:0:35)+'...' : (gasStation.location) : '') }}</p>
           </td>
           <td class="w-5 pr-5">
             <table class="pull-right text-center">

@@ -61,6 +61,8 @@ export class AuthenticationService extends RestClientService {
       .post(this.collectionDevicePath(), body, this.buildRequestOptions({}, { uid: context.uid, client: context.client, token: context.token }))
       .map((response: Response) => {
         const data = this.extract<any>(response);
+        console.log('DEVICE');
+        console.log(data);
         this.saveContext(_.assign(context, { deviceId: data.id }));
         return true;
       })

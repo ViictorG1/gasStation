@@ -30,7 +30,7 @@ export class ListPage {
   calcDistanceMsg = 'Buscando postos';
 
   gasStations: any = [];
-  gasStationsList: any[];
+  gasStationsList: any[] = [];
   gasStationsObservable: BehaviorSubject<any[]>;
   gasStation: any;
   places: any[] = [];
@@ -78,7 +78,6 @@ export class ListPage {
     private placeService: PlaceService,
     private interactionService: InteractionService
   ) {
-    this.gasStationsList = new Array<any>();
     this.gasStationsObservable = <BehaviorSubject<any[]>>new BehaviorSubject([]);
   }
 
@@ -220,6 +219,7 @@ export class ListPage {
       type: 'gas_station',
       key: 'AIzaSyC4ac6cxMs7NqDfE7SWRqnJIlbg5PyhWcc'
     }
+    // lat: -27.616596, lng: -48.390837
 
     this.service = new google.maps.places.PlacesService(this.map);
     this.service.nearbySearch(params, this.processResults.bind(this), );
@@ -231,7 +231,7 @@ export class ListPage {
 
       setTimeout(() => {
         this.findAtLeastOne();
-      }, 2000);
+      }, 1000);
       return;
     } else {
       Observable.from(results)
@@ -244,7 +244,6 @@ export class ListPage {
             for (let i = 0; i < results.length; i++) {
               let place = results[i];
               let foundedPlace: any = _.find(places, { google_place_id: place.place_id });
-              console.log(foundedPlace);
 
               if (foundedPlace) {
                 if (foundedPlace.is_visible) {
@@ -269,23 +268,38 @@ export class ListPage {
                   name: place.name,
                   google_place_id: place.place_id,
                   is_visible: true,
-                  values: [
-                    { type: 'GC', label: 'Gasolina comum', value: 3.799 },
-                    { type: 'GA', label: 'Gasolina aditivada', value: 3.999 },
-                    { type: 'DI', label: 'Diesel', value: 3.199 },
-                    { type: 'ET', label: 'Etanol', value: 3.299 },
-                    { type: 'GNV', label: 'Gás natural veicular', value: 0.000 }
-                  ],
                   settings: '',
-                  type: type || 'UNDEFINED'
+                  flag: type || 'UNDEFINED'
                 }
 
                 this.placeService.createPlace(createPlace, this.context)
                   .subscribe((newPlace: any) => {
-                    console.log(newPlace);
+                    let interaction = {
+                      device_id: this.context.deviceId,
+                      interaction_type_id: "801",
+                      place_id: newPlace.id,
+                      description: [
+                        { short: 'GC', label: 'Gasolina comum', amount: 3999 },
+                        { short: 'GA', label: 'Gasolina aditivada', amount: 3999 },
+                        { short: 'DI', label: 'Diesel', amount: 3999 },
+                        { short: 'ET', label: 'Etanol', amount: 3999 },
+                        { short: 'GNV', label: 'Gás natural veicular', amount: 3999 }
+                      ]
+                    }
+                    this.interactionService.createInteraction(interaction, this.context)
+                      .subscribe((data: any) => {
+                        console.log(data);
+                      }, (error: Error) => {
+                        console.warn(error);
+                      });
+                    if (_.includes(place.name, 'Posto') && !_.includes(place.name, 'Borracharia' || 'Mecânica')) {
+                      this.calculateDistance(place, this.latlngUser, newPlace);
+                    }
                   }, (error: Error) => {
                     console.warn(error);
                   });
+
+                this.cd.detectChanges();
               }
             }
 
@@ -317,6 +331,7 @@ export class ListPage {
       } else {
         console.log(place);
       }
+      this.cd.detectChanges();
     });
   }
 
@@ -344,6 +359,7 @@ export class ListPage {
   }
 
   findAtLeastOne() {
+    // lat: -27.616596, lng: -48.390837
     let params = {
       location: { lat: this.latlngUser.lat, lng: this.latlngUser.lng },
       radius: this.auxRaio,
@@ -353,7 +369,7 @@ export class ListPage {
     }
 
     this.service = new google.maps.places.PlacesService(this.map);
-    this.service.textSearch(params, this.processResults.bind(this));
+    this.service.nearbySearch(params, this.processResults.bind(this));
   }
 
   errorDetails(error: any) {
@@ -388,15 +404,16 @@ export class ListPage {
       type = 'UNDEFINED';
     }
 
+    console.log(place);
     this.gasStationsList.push({
       id: foundedPlace.id,
       place_id: foundedPlace.google_place_id,
       values: foundedPlace.values || [
-        { type: 'GC', label: 'Gasolina comum', value: 3.799 },
-        { type: 'GA', label: 'Gasolina aditivada', value: 3.999 },
-        { type: 'DI', label: 'Diesel', value: 3.199 },
-        { type: 'ET', label: 'Etanol', value: 3.299 },
-        { type: 'GNV', label: 'Gás natural veicular', value: 0.000 }
+        { type: 'GC', label: 'Gasolina comum', value: foundedPlace.prices ? foundedPlace.prices[0].amount / 1000 : 0.000 },
+        { type: 'GA', label: 'Gasolina aditivada', value: foundedPlace.prices ? foundedPlace.prices[1].amount / 1000 : 0.000 },
+        { type: 'DI', label: 'Diesel', value: foundedPlace.prices ? foundedPlace.prices[2].amount / 1000 : 0.000 },
+        { type: 'ET', label: 'Etanol', value: foundedPlace.prices ? foundedPlace.prices[3].amount / 1000 : 0.000 },
+        { type: 'GNV', label: 'Gás natural veicular', value: foundedPlace.prices ? foundedPlace.prices[4].amount / 1000 : 0.000 }
       ],
       name: place.name,
       location: place.vicinity,
@@ -409,12 +426,14 @@ export class ListPage {
 
     this.orderBy('distance');
     this.cd.markForCheck();
+    this.cd.detectChanges();
   }
 
   orderBy(orderByAny?: string) {
     orderByAny ? this.orderByAny = orderByAny : this.orderByAny;
     this.gasStationsList = _.orderBy(this.gasStationsList, this.orderByAny, 'asc');
     this.cd.markForCheck();
+    this.cd.detectChanges();
   }
 
   openMap() {
