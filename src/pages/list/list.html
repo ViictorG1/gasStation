@@ -3,7 +3,7 @@
     <div class="w-100 order-by-container">
       <ion-item class="order-by">
         <ion-select placeholder="Escolha" (ngModelChange)="orderBy($event)" [(ngModel)]="orderByAny" interface="popover">
-          <ion-option value="values[fuelType.number].value">Preço</ion-option>
+          <ion-option value="values[.find(x => x.type === fuelType.type).value">Preço</ion-option>
           <ion-option value="distance">Distancia</ion-option>
           <ion-option value="type">Bandeira</ion-option>
         </ion-select>
@@ -41,14 +41,14 @@
         <tr>
           <td class="w-5 colors-gas">
             <table class="w-80 h-100">
-              <tr *ngIf="gasStation.type==='Ipiranga'" class="ipiranga-1 w-100 h-50"><td></td></tr>
-              <tr *ngIf="gasStation.type==='Ipiranga'" class="ipiranga-2 w-100 h-50"><td></td></tr>
-              <tr *ngIf="gasStation.type==='Shell'" class="shell-1 w-100 h-50"><td></td></tr>
-              <tr *ngIf="gasStation.type==='Shell'" class="shell-2 w-100 h-50"><td></td></tr>
-              <tr *ngIf="gasStation.type==='BR'" class="br-1 w-100 h-50"><td></td></tr>
-              <tr *ngIf="gasStation.type==='BR'" class="br-2 w-100 h-50"><td></td></tr>
-              <tr *ngIf="gasStation.type==='UNDEFINED'" class="undefined-color-1 w-100 h-50"><td></td></tr>
-              <tr *ngIf="gasStation.type==='UNDEFINED'" class="undefined-color-2 w-100 h-50"><td></td></tr>
+              <tr *ngIf="gasStation.flag==='Ipiranga'" class="ipiranga-1 w-100 h-50"><td></td></tr>
+              <tr *ngIf="gasStation.flag==='Ipiranga'" class="ipiranga-2 w-100 h-50"><td></td></tr>
+              <tr *ngIf="gasStation.flag==='Shell'" class="shell-1 w-100 h-50"><td></td></tr>
+              <tr *ngIf="gasStation.flag==='Shell'" class="shell-2 w-100 h-50"><td></td></tr>
+              <tr *ngIf="gasStation.flag==='BR'" class="br-1 w-100 h-50"><td></td></tr>
+              <tr *ngIf="gasStation.flag==='BR'" class="br-2 w-100 h-50"><td></td></tr>
+              <tr *ngIf="gasStation.flag==='UNDEFINED'" class="undefined-color-1 w-100 h-50"><td></td></tr>
+              <tr *ngIf="gasStation.flag==='UNDEFINED'" class="undefined-color-2 w-100 h-50"><td></td></tr>
             </table>
           </td>
           <td class="w-90 text-gas">
@@ -59,7 +59,7 @@
             <table class="pull-right text-center">
               <tr>
                 <td>
-                  <h2><b><span class="rs">R$ </span>{{ gasStation.values[fuelType.number].value }} {{ gasStation.values[fuelType.number].type }}</b></h2>
+                  <h2><b><span class="rs">R$ </span>{{ (gasStation.values | filterBy:'type':fuelType.type).value }} {{ (gasStation.values | filterBy:'type':fuelType.type).type }}</b></h2>
                 </td>
               </tr>
               <tr>

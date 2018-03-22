@@ -1,6 +1,16 @@
 <ion-content padding class="sample-modal-page">
   <button (click)="navCtrl.pop()" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
   <div class="content-gas pb-10">
+    <ion-row (click)="updateFlag()">
+      <ion-col [hidden]="gasStation.flag!='Ipiranga'" class="ipiranga-1 w-100 h-50" col-6></ion-col>
+      <ion-col [hidden]="gasStation.flag!='Ipiranga'" class="ipiranga-2 w-100 h-50" col-6></ion-col>
+      <ion-col [hidden]="gasStation.flag!='Shell'" class="shell-1 w-100 h-50" col-6></ion-col>
+      <ion-col [hidden]="gasStation.flag!='Shell'" class="shell-2 w-100 h-50" col-6></ion-col>
+      <ion-col [hidden]="gasStation.flag!='BR'" class="br-1 w-100 h-50" col-6></ion-col>
+      <ion-col [hidden]="gasStation.flag!='BR'" class="br-2 w-100 h-50" col-6></ion-col>
+      <ion-col [hidden]="gasStation.flag!='UNDEFINED'" class="undefined-color-1 w-100 h-50" col-6></ion-col>
+      <ion-col [hidden]="gasStation.flag!='UNDEFINED'" class="undefined-color-2 w-100 h-50" col-6></ion-col>
+    </ion-row>
     <ion-row [class.mb-20]="!editingPrice" class="text-center mt-10 p-10">
       <ion-col col-12>
         <span class="title-gas title">{{ gasStation.name | uppercase }}</span><br/><br/>
@@ -14,7 +24,7 @@
           <span [class.adjust-label]="editingPrice.type === 'ga'" [hidden]="editingPrice.type === 'gc'" (click)="changeValue('gc', gasStation.values[0].value)" id="gc" class="price">
             <b>
               <span class="rs">R$</span>
-              {{ gasStation.values[0].value }}
+              {{ (gasStation.values | filterBy:'type':'GC').value }}
             </b>
           </span>
           <ion-item *ngIf="editingPrice.type === 'gc'" class="input-price">
@@ -26,7 +36,7 @@
           <span [class.adjust-label]="editingPrice.type === 'gc'" [hidden]="editingPrice.type === 'ga'" (click)="changeValue('ga', gasStation.values[1].value)" id="ga" class="price">
             <b>
               <span class="rs">R$</span>
-              {{ gasStation.values[1].value }}
+              {{ (gasStation.values | filterBy:'type':'GA').value }}
             </b>
           </span>
           <ion-item *ngIf="editingPrice.type === 'ga'" class="input-price">
@@ -37,10 +47,10 @@
       </ion-row>
       <ion-row class="mb-20">
         <ion-col col-6 text-center>
-          {{ gasStation.values[0].label }}
+          {{ (gasStation.values  | filterBy:'type':'GC').label }}
         </ion-col>
         <ion-col col-6 text-center>
-          {{ gasStation.values[1].label }}
+          {{ (gasStation.values | filterBy:'type':'GA').label }}
         </ion-col>
       </ion-row>
       <ion-row class="values">
@@ -48,7 +58,7 @@
           <span [class.adjust-label]="editingPrice.type === 'et'" [hidden]="editingPrice.type === 'di'" (click)="changeValue('di', gasStation.values[2].value)" id="di" class="price">
             <b>
               <span class="rs">R$</span>
-              {{ gasStation.values[2].value }}
+              {{ (gasStation.values | filterBy:'type':'ET').value }}
             </b>
           </span>
           <ion-item *ngIf="editingPrice.type === 'di'" class="input-price">
@@ -60,7 +70,7 @@
           <span [class.adjust-label]="editingPrice.type === 'di'" [hidden]="editingPrice.type === 'et'" (click)="changeValue('et', gasStation.values[3].value)" id="et" class="price">
             <b>
               <span class="rs">R$</span>
-              {{ gasStation.values[3].value }}
+              {{ (gasStation.values | filterBy:'type':'DI').value }}
             </b>
           </span>
           <ion-item *ngIf="editingPrice.type === 'et'" class="input-price">
@@ -71,15 +81,15 @@
       </ion-row>
       <ion-row>
         <ion-col col-6 text-center>
-          {{ gasStation.values[2].label }}
+          {{ (gasStation.values | filterBy:'type':'ET').label }}
         </ion-col>
         <ion-col col-6 text-center>
-          {{ gasStation.values[3].label }}
+          {{ (gasStation.values | filterBy:'type':'DI').label }}
         </ion-col>
       </ion-row>
     </ion-grid>
     <ion-grid class="divider"></ion-grid>
-    <ion-grid text-center padding-top class="grid-text pb-0">
+    <!-- <ion-grid text-center padding-top class="grid-text pb-0">
       <ion-row>
         <ion-col class="mt-15" col-12>
           <span class="sub-title title">CONVENIÊNCIA</span><br/>
@@ -102,7 +112,7 @@
           <img src='assets/icon/wifi.png'/>
         </ion-col>
       </ion-row>
-    </ion-grid>
+    </ion-grid> -->
     <ion-grid text-center class="grid-text">
       <ion-row>
         <ion-col col-12>

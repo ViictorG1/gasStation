@@ -11,7 +11,7 @@ import { ContextService } from '../../app/shared/services/context.service';
 
 import { LatLng } from '@ionic-native/google-maps';
 import { Geolocation } from '@ionic-native/geolocation';
-import { HomePage } from '../index';
+import { HomePage, GasStationPage } from '../index';
 
 import { IntroPage } from '../../pages/intro/intro';
 import { PlaceService } from '../../app/shared/services/place.service';
@@ -40,7 +40,7 @@ export class ListPage {
 
   map: any;
   latlngUser: LatLng;
-  raio = 1000;
+  raio = 1500;
   auxRaio = 500;
   trying = 0;
   directionsService = new google.maps.DirectionsService;
@@ -63,7 +63,7 @@ export class ListPage {
     { type: 'GNV', label: 'Gás natural veicular', number: 4 }
   ];
   typeCounter = 0;
-  fuelType: any = { type: 'GC', label: 'Gasolina comum', number: 0 };
+  fuelType: any;
 
   constructor(
     public alertCtrl: AlertController,
@@ -79,6 +79,11 @@ export class ListPage {
     private interactionService: InteractionService
   ) {
     this.gasStationsObservable = <BehaviorSubject<any[]>>new BehaviorSubject([]);
+    this.fuelType = { type: 'GC', label: 'Gasolina comum', number: 0 };
+  }
+
+  ionViewDidEnter() {
+    console.log(this.context);
   }
 
   ionViewDidLoad() {
@@ -87,8 +92,8 @@ export class ListPage {
         this.storage.set('intro-done', true);
         this.navCtrl.setRoot(IntroPage);
       } else {
-        let serialized = localStorage.getItem('br.com.gasin');
-        let context = serialized ? JSON.parse(serialized) : {};
+        // let serialized = localStorage.getItem('br.com.gasin');
+        // let context = serialized ? JSON.parse(serialized) : {};
 
         this.contextService.contextChanges$.subscribe((context: any) => {
           if (context) {
@@ -123,18 +128,21 @@ export class ListPage {
   openGasStation(gasStation: any) {
     this.gasStation = gasStation;
 
-    this.interactionService.createInteraction({ interaction_type_id: '100', place_id: this.gasStation.google_place_id, description: 'List page' }, this.context)
+    this.interactionService.createInteraction({ interaction_type_id: '100', place_id: this.gasStation.id, description: 'List page' }, this.context)
       .subscribe((data: any) => {
         console.log(data);
       }, (error: Error) => {
         console.warn(error);
       });
 
+    console.log(gasStation);
+
     this.navCtrl.push(HomePage, {
       gasStation: gasStation,
       backIsHide: true,
       gasStations: this.gasStationsList,
-      userLocation: this.latlngUser
+      userLocation: this.latlngUser,
+      context: this.context
     });
   }
 
@@ -247,9 +255,9 @@ export class ListPage {
 
               if (foundedPlace) {
                 if (foundedPlace.is_visible) {
-                  if (_.includes(place.name, 'Posto') && !_.includes(place.name, 'Borracharia' || 'Mecânica')) {
+                  // if (_.includes(place.name, 'Posto' || 'Station') && !_.includes(place.name, 'Borracharia' || 'Mecânica')) {
                     this.calculateDistance(place, this.latlngUser, foundedPlace);
-                  }
+                  // }
                 }
               } else {
                 let type = '';
@@ -279,11 +287,11 @@ export class ListPage {
                       interaction_type_id: "801",
                       place_id: newPlace.id,
                       description: [
-                        { short: 'GC', label: 'Gasolina comum', amount: 3999 },
-                        { short: 'GA', label: 'Gasolina aditivada', amount: 3999 },
-                        { short: 'DI', label: 'Diesel', amount: 3999 },
-                        { short: 'ET', label: 'Etanol', amount: 3999 },
-                        { short: 'GNV', label: 'Gás natural veicular', amount: 3999 }
+                        { short: 'GC', label: 'Gasolina comum', amount: 1000 },
+                        { short: 'GA', label: 'Gasolina aditivada', amount: 1000 },
+                        { short: 'DI', label: 'Diesel', amount: 1000 },
+                        { short: 'ET', label: 'Etanol', amount: 1000 },
+                        { short: 'GNV', label: 'Gás natural veicular', amount: 1000 }
                       ]
                     }
                     this.interactionService.createInteraction(interaction, this.context)
@@ -292,9 +300,9 @@ export class ListPage {
                       }, (error: Error) => {
                         console.warn(error);
                       });
-                    if (_.includes(place.name, 'Posto') && !_.includes(place.name, 'Borracharia' || 'Mecânica')) {
+                    // if (_.includes(place.name, 'Posto' || 'Station') && !_.includes(place.name, 'Borracharia' || 'Mecânica')) {
                       this.calculateDistance(place, this.latlngUser, newPlace);
-                    }
+                    // }
                   }, (error: Error) => {
                     console.warn(error);
                   });
@@ -309,14 +317,6 @@ export class ListPage {
             console.warn(error);
           });
         });
-      // if (this.auxRaio > 500) {
-      //   let place = results[0];
-      //   this.marshalGasStations(place);
-      // } else {
-        // setTimeout(() => {
-        //   this.calculateDistances(this.latlngUser);
-        // }, 3000);
-      // }
     }
   }
 
@@ -383,7 +383,7 @@ export class ListPage {
   }
 
   changeFuel() {
-    if (this.typeCounter === 3) {
+    if (this.typeCounter === 4) {
       this.typeCounter = 0;
     } else {
       this.typeCounter += 1;
@@ -392,33 +392,32 @@ export class ListPage {
   }
 
   marshalGasStations(place: any, foundedPlace: any) {
-    let type = '';
+    let flag = '';
 
     if (place.name.toUpperCase().includes('IPIRANGA')) {
-      type = 'Ipiranga';
+      flag = 'Ipiranga';
     } else if (place.name.toUpperCase().includes('SHELL')) {
-      type = 'Shell';
+      flag = 'Shell';
     } else if (place.name.toUpperCase().toUpperCase().includes('BR') || place.name.toUpperCase().includes('PETROBRAS')) {
-      type = 'BR';
+      flag = 'BR';
     } else {
-      type = 'UNDEFINED';
+      flag = 'UNDEFINED';
     }
 
-    console.log(place);
     this.gasStationsList.push({
       id: foundedPlace.id,
       place_id: foundedPlace.google_place_id,
       values: foundedPlace.values || [
-        { type: 'GC', label: 'Gasolina comum', value: foundedPlace.prices ? foundedPlace.prices[0].amount / 1000 : 0.000 },
-        { type: 'GA', label: 'Gasolina aditivada', value: foundedPlace.prices ? foundedPlace.prices[1].amount / 1000 : 0.000 },
-        { type: 'DI', label: 'Diesel', value: foundedPlace.prices ? foundedPlace.prices[2].amount / 1000 : 0.000 },
-        { type: 'ET', label: 'Etanol', value: foundedPlace.prices ? foundedPlace.prices[3].amount / 1000 : 0.000 },
-        { type: 'GNV', label: 'Gás natural veicular', value: foundedPlace.prices ? foundedPlace.prices[4].amount / 1000 : 0.000 }
+        { type: 'GC', label: 'Gasolina comum', value: foundedPlace.prices ? foundedPlace.prices.find(x => x.short === 'GC').amount / 1000 : 1.000 },
+        { type: 'GA', label: 'Gasolina aditivada', value: foundedPlace.prices ? foundedPlace.prices.find(x => x.short === 'GA').amount / 1000 : 1.000 },
+        { type: 'DI', label: 'Diesel', value: foundedPlace.prices ? foundedPlace.prices.find(x => x.short === 'DI').amount / 1000 : 1.000 },
+        { type: 'ET', label: 'Etanol', value: foundedPlace.prices ? foundedPlace.prices.find(x => x.short === 'ET').amount / 1000 : 1.000 },
+        { type: 'GNV', label: 'Gás natural veicular', value: foundedPlace.prices ? foundedPlace.prices.find(x => x.short === 'GNV').amount / 1000 : 1.000 }
       ],
-      name: place.name,
+      name: foundedPlace.name || place.name,
       location: place.vicinity,
       distance: place.distance,
-      type: foundedPlace.flag || type,
+      flag: foundedPlace.flag || flag,
       latitude: place.geometry.location.lat(),
       longitude: place.geometry.location.lng(),
       openNow: place.opening_hours ? place.opening_hours.open_now : true

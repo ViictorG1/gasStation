@@ -49,16 +49,16 @@ export class PlaceService extends RestClientService {
       .catch(this.handleError);
   }
 
-  // updateUser(data: any): Observable<any> {
-  //   const body = JSON.stringify(this.marshalUser(data));
+  updatePlace(data: any, context: any): Observable<any> {
+    const body = JSON.stringify(this.marshalPlace(data));
 
-  //   return this.http
-  //     .put(this.elementPath(data.id), body, this.buildRequestOptions())
-  //     .map((response: Response) => {
-  //       return this.extract<any>(response);
-  //     })
-  //     .catch(this.handleError);
-  // }
+    return this.http
+      .put(this.elementPath(data.id), body, this.buildRequestOptions({}, { uid: context.uid, client: context.client, token: context.token }))
+      .map((response: Response) => {
+        return this.extract<any>(response);
+      })
+      .catch(this.handleError);
+  }
 
   // deleteUser(id: number): Observable<boolean> {
   //   return this.http
@@ -84,11 +84,16 @@ export class PlaceService extends RestClientService {
   //     .catch(this.handleError);
   // }
 
-  private marshalPlace(user: any): any {
+  private marshalPlace(place: any): any {
     return {
-      nickname: user.nickname,
-      email: user.email,
-      password: user.password
+      created_at:'',
+      google_place_id: place.place_id,
+      id: place.id,
+      is_visible: true,
+      name: place.name,
+      settings: '',
+      flag: place.flag,
+      updated_at:''
     };
   }
 
@@ -104,6 +109,10 @@ export class PlaceService extends RestClientService {
 
   private collectionPath(): string {
     return `${this.apiPath}/places`;
+  }
+
+  private elementPath(id: string) {
+    return `${this.collectionPath()}/${id}`;
   }
 
 }
