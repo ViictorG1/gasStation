@@ -28,7 +28,7 @@ import { HeaderColor } from '@ionic-native/header-color';
 import { StatusBar } from '@ionic-native/status-bar';
 
 // PIPE
-import { TransformDistancePipe, GasStationPage, ListPage, HomePage, IntroPage } from '../pages/index';
+import { TransformDistancePipe, FilterPipe, GasStationPage, ListPage, HomePage, IntroPage } from '../pages/index';
 
 // COMPONENT
 import { GasStationApp } from './app.component';
@@ -40,6 +40,7 @@ import { GasStationApp } from './app.component';
     ListPage,
     GasStationPage,
     TransformDistancePipe,
+    FilterPipe,
     RatingComponent,
     IntroPage
   ],

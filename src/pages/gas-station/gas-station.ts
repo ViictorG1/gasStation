@@ -1,9 +1,12 @@
-import { Component, Output, EventEmitter, AfterViewInit } from '@angular/core';
+import { Component, Output, EventEmitter, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { NavController, NavParams, ViewController, Keyboard } from 'ionic-angular';
+import { LaunchNavigator, LaunchNavigatorOptions } from '@ionic-native/launch-navigator';
 import { AlertController } from 'ionic-angular';
 import * as $ from 'jquery';
+import * as _ from 'lodash';
 
-import { LaunchNavigator, LaunchNavigatorOptions } from '@ionic-native/launch-navigator';
+import { InteractionService } from '../../app/shared/services/interaction.service';
+import { PlaceService } from '../../app/shared/services/place.service';
 
 @Component({
   selector: 'page-gas-station',
@@ -12,6 +15,8 @@ import { LaunchNavigator, LaunchNavigatorOptions } from '@ionic-native/launch-na
 export class GasStationPage implements AfterViewInit {
 
   @Output() onNavigation: EventEmitter<any> = new EventEmitter<any>();
+
+  context: any;
 
   gasStation: any = {
     name: "POSTO"
@@ -24,21 +29,28 @@ export class GasStationPage implements AfterViewInit {
     public navCtrl: NavController,
     public viewCtrl: ViewController,
     public navParams: NavParams,
+    private alertCtrl: AlertController,
+    private cd: ChangeDetectorRef,
     private launchNavigator: LaunchNavigator,
-    private alertCtrl: AlertController
+    private interactionService: InteractionService,
+    private placeService: PlaceService
   ) {
     this.gasStation = this.navParams.get('gasStation');
+    console.log(this.gasStation);
     this.latlngUser = this.navParams.get('latlngUser');
-
+    this.context = this.navParams.get('context');
   }
 
   ngAfterViewInit() {
     $(".content-gas").click((e: any) => {
       if (e.target.className !== '') {
         if (e.target.className !== 'text-input text-input-ios') {
-          this.editingPrice.type = '';
-          this.editingPrice.price = '';
-          this.editingPrice.newValue = '';
+          if (e.target.className !== 'rs') {
+            this.editingPrice.type = '';
+            this.editingPrice.price = '';
+            this.editingPrice.newValue = '';
+            this.cd.detectChanges();
+          }
         }
       }
     });
@@ -71,16 +83,48 @@ export class GasStationPage implements AfterViewInit {
   changeValue(type: string, value: string) {
     this.editingPrice.type = type;
     this.editingPrice.price = value;
+    this.cd.detectChanges();
+  }
+
+  updateFlag(newFlag: string) {
+    this.gasStation.flag = 'Shell';
+    this.placeService.updatePlace(this.gasStation, this.context)
+      .subscribe((gasStation: any) => {
+        console.log(gasStation)
+        this.cd.detectChanges();
+      }, (error: Error) => {
+        console.warn(error);
+      });
   }
 
   handleEnter() {
     this.presentAlert(this.editingPrice);
+    (this.editingPrice.type === 'gc') ? this.editingPrice.newValue * 1000 : this.gasStation.values.find(x => x.type === 'GC').value * 1000
+
+    let interaction = {
+      device_id: this.context.deviceId,
+      interaction_type_id: "801",
+      place_id: this.gasStation.id,
+      description: [
+        { short: 'GC', label: 'Gasolina comum', amount: (this.editingPrice.type === 'gc') ? this.editingPrice.newValue * 1000 : this.gasStation.values.find(x => x.type === 'GC').value * 1000 },
+        { short: 'GA', label: 'Gasolina aditivada', amount: (this.editingPrice.type === 'ga') ? this.editingPrice.newValue * 1000 : this.gasStation.values.find(x => x.type === 'GA').value * 1000 },
+        { short: 'DI', label: 'Diesel', amount: (this.editingPrice.type === 'di') ? this.editingPrice.newValue * 1000 : this.gasStation.values.find(x => x.type === 'DI').value * 1000 },
+        { short: 'ET', label: 'Etanol', amount: (this.editingPrice.type === 'et') ? this.editingPrice.newValue * 1000 : this.gasStation.values.find(x => x.type === 'ET').value * 1000 },
+        { short: 'GNV', label: 'Gás natural veicular', amount: (this.editingPrice.type === 'gnv') ? this.editingPrice.newValue * 1000 : this.gasStation.values.find(x => x.type === 'GNV').value * 1000 }
+      ]
+    }
+    this.interactionService.createInteraction(interaction, this.context)
+    .subscribe((data: any) => {
+      console.log(data);
+    }, (error: Error) => {
+      console.warn(error);
+    });
 
     setTimeout(() => {
       this.editingPrice.type = '';
       this.editingPrice.price = '';
       this.editingPrice.newValue = '';
-    }, 1500);
+    }, 1000);
   }
 
   presentAlert(editingPrice: any) {

@@ -2,6 +2,10 @@ import { NavController, NavParams, ModalController, LoadingController, AlertCont
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import $ from 'jquery';
 
+import { Observable } from 'rxjs/Observable';
+
+import { PlaceService } from '../../app/shared/services/place.service';
+
 import { LatLng } from '@ionic-native/google-maps';
 import { Geolocation } from '@ionic-native/geolocation';
 
@@ -17,6 +21,9 @@ declare var google;
 export class HomePage {
 
   @ViewChild('map') mapElement: ElementRef;
+
+  context: any;
+  placeIds: string[] = [];
 
   map: any;
   service: any;
@@ -79,7 +86,8 @@ export class HomePage {
     public alertCtrl: AlertController,
     public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
-    public geolocation: Geolocation
+    public geolocation: Geolocation,
+    private placeService: PlaceService
   ) {
     this.presentLoadingDefault();
     this.getMap();
@@ -115,6 +123,7 @@ export class HomePage {
     this.gasStation = this.navParams.get('gasStation') || undefined;
     this.backIsHide = this.navParams.get('backIsHide') || false;
     this.gasStations = this.navParams.get('gasStations') || [];
+    this.context = this.navParams.get('context') || {};
   }
 
   loadAllGasStations() {
@@ -174,78 +183,149 @@ export class HomePage {
 
   processResults(results, status, pagination) {
     if (status === "OK") {
-      for (let i = 0; i < results.length; i++) {
-        let place = results[i];
-        let type = '';
+        Observable.from(results)
+        .forEach((result: any) => {
+          this.placeIds.push(result.place_id);
+        })
+        .then(() => {
+          this.placeService.getPlaces(this.context, this.placeIds)
+          .subscribe((places: any[]) => {
+            for (let i = 0; i < results.length; i++) {
+              let place = results[i];
+              let foundedPlace: any = _.find(places, { google_place_id: place.place_id });
 
-        if (place.name.toUpperCase().includes('IPIRANGA')) {
-          type = 'Ipiranga';
-        } else if (place.name.toUpperCase().includes('SHELL')) {
-          type = 'Shell';
-        } else if (place.name.toUpperCase().toUpperCase().includes('BR') || place.name.toUpperCase().includes('PETROBRAS')) {
-          type = 'BR';
-        } else {
-          type = 'UNDEFINED';
-        }
+              if (foundedPlace) {
+                if (foundedPlace.is_visible) {
+                  if (_.includes(place.name, 'Posto') && !_.includes(place.name, 'Borracharia' || 'Mecânica')) {
+                    if (i === results.length - 1) {
+                      this.gasStations.forEach((gasStation: any) => {
+                        switch (gasStation.type) {
+                          case 'Ipiranga':
+                          this.makeMarker(
+                            new LatLng(parseFloat(gasStation.latitude),
+                            parseFloat(gasStation.longitude)),
+                            this.iconsIpiranga.gasStation,
+                            gasStation);
+                          break;
 
-        this.gasStations.push({
-          id: place.id,
-          values: [
-            { type: 'GC', label: 'Gasolina comum', value: '3,97' },
-            { type: 'GA', label: 'Gasolina aditivada', value: '4,09' },
-            { type: 'DI', label: 'Diesel', value: '3,36' },
-            { type: 'ET', label: 'Etanol', value: '3,15' },
-            { type: 'GNV', label: 'Gás natural veicular', value: '0,0' }
-          ],
-          name: place.name,
-          location: place.vicinity,
-          type: type,
-          latitude: place.geometry.location.lat(),
-          longitude: place.geometry.location.lng(),
-          openNow: place.opening_hours ? place.opening_hours.open_now : true
-        });
+                          case 'Shell':
+                          this.makeMarker(
+                            new LatLng(parseFloat(gasStation.latitude),
+                            parseFloat(gasStation.longitude)),
+                            this.iconsShell.gasStation,
+                            gasStation);
+                          break;
 
-        if (i === results.length -1) {
-          this.gasStations.forEach((gasStation: any) => {
-            switch (gasStation.type) {
-              case 'Ipiranga':
-              this.makeMarker(
-                new LatLng(parseFloat(gasStation.latitude),
-                parseFloat(gasStation.longitude)),
-                this.iconsIpiranga.gasStation,
-                gasStation);
-              break;
+                          case 'BR':
+                          this.makeMarker(
+                            new LatLng(parseFloat(gasStation.latitude),
+                            parseFloat(gasStation.longitude)),
+                            this.iconsBr.gasStation,
+                            gasStation);
+                          break;
 
-              case 'Shell':
-              this.makeMarker(
-                new LatLng(parseFloat(gasStation.latitude),
-                parseFloat(gasStation.longitude)),
-                this.iconsShell.gasStation,
-                gasStation);
-              break;
+                          case 'UNDEFINED':
+                          this.makeMarker(
+                            new LatLng(parseFloat(gasStation.latitude),
+                            parseFloat(gasStation.longitude)),
+                            this.iconsUndefined.gasStation,
+                            gasStation);
+                          break;
+                        }
+                      });
+                    }
+                  }
+                }
+              } else {
+                let type = '';
 
-              case 'BR':
-              this.makeMarker(
-                new LatLng(parseFloat(gasStation.latitude),
-                parseFloat(gasStation.longitude)),
-                this.iconsBr.gasStation,
-                gasStation);
-              break;
+                if (place.name.toUpperCase().includes('IPIRANGA')) {
+                  type = 'Ipiranga';
+                } else if (place.name.toUpperCase().includes('SHELL')) {
+                  type = 'Shell';
+                } else if (place.name.toUpperCase().toUpperCase().includes('BR') || place.name.toUpperCase().includes('PETROBRAS')) {
+                  type = 'BR';
+                } else {
+                  type = 'UNDEFINED';
+                }
 
-              case 'UNDEFINED':
-              this.makeMarker(
-                new LatLng(parseFloat(gasStation.latitude),
-                parseFloat(gasStation.longitude)),
-                this.iconsUndefined.gasStation,
-                gasStation);
-              break;
-            }
+                let createPlace = {
+                  name: place.name,
+                  google_place_id: place.place_id,
+                  is_visible: true,
+                  settings: '',
+                  flag: type || 'UNDEFINED'
+                }
+
+                this.placeService.createPlace(createPlace, this.context)
+                  .subscribe((newPlace: any) => {
+                    let interaction = {
+                      device_id: this.context.deviceId,
+                      interaction_type_id: "801",
+                      place_id: newPlace.id,
+                      description: [
+                        { short: 'GC', label: 'Gasolina comum', amount: 1000 },
+                        { short: 'GA', label: 'Gasolina aditivada', amount: 1000 },
+                        { short: 'DI', label: 'Diesel', amount: 1000 },
+                        { short: 'ET', label: 'Etanol', amount: 1000 },
+                        { short: 'GNV', label: 'Gás natural veicular', amount: 1000 }
+                      ]
+                    }
+                    // this.interactionService.createInteraction(interaction, this.context)
+                    //   .subscribe((data: any) => {
+                    //     console.log(data);
+                    //   }, (error: Error) => {
+                    //     console.warn(error);
+                    //   });
+                    // if (_.includes(place.name, 'Posto') && !_.includes(place.name, 'Borracharia' || 'Mecânica')) {
+                    //   this.calculateDistance(place, this.latlngUser, newPlace);
+                    // }
+                  }, (error: Error) => {
+                    console.warn(error);
+                  });
+
+                // this.cd.detectChanges();
+              }
+
+              // this.cd.markForCheck();
+              this.loading.dismiss();
+              }
+            }, (error: any) => {
+              console.warn(error);
+            });
           });
-        }
+        // let place = results[i];
+        // let type = '';
+
+        // if (place.name.toUpperCase().includes('IPIRANGA')) {
+        //   type = 'Ipiranga';
+        // } else if (place.name.toUpperCase().includes('SHELL')) {
+        //   type = 'Shell';
+        // } else if (place.name.toUpperCase().toUpperCase().includes('BR') || place.name.toUpperCase().includes('PETROBRAS')) {
+        //   type = 'BR';
+        // } else {
+        //   type = 'UNDEFINED';
+        // }
+
+        // this.gasStations.push({
+        //   id: place.id,
+        //   values: [
+        //     { type: 'GC', label: 'Gasolina comum', value: '3,97' },
+        //     { type: 'GA', label: 'Gasolina aditivada', value: '4,09' },
+        //     { type: 'DI', label: 'Diesel', value: '3,36' },
+        //     { type: 'ET', label: 'Etanol', value: '3,15' },
+        //     { type: 'GNV', label: 'Gás natural veicular', value: '0,0' }
+        //   ],
+        //   name: place.name,
+        //   location: place.vicinity,
+        //   type: type,
+        //   latitude: place.geometry.location.lat(),
+        //   longitude: place.geometry.location.lng(),
+        //   openNow: place.opening_hours ? place.opening_hours.open_now : true
+        // });
       }
 
       pagination.nextPage();
-    }
   }
 
   loadMap() {
@@ -272,6 +352,7 @@ export class HomePage {
 
     if (this.gasStation) {
       this.loadAllGasStations();
+      console.log(this.gasStation);
       this.addInfoWindow(this.gasStation);
       this.gasStationLocation = new LatLng(parseFloat(this.gasStation.latitude), parseFloat(this.gasStation.longitude));
       this.map.setZoom(17);
@@ -291,7 +372,8 @@ export class HomePage {
   addInfoWindow(gasStation: any) {
     let gasStationModal = this.modalCtrl.create(GasStationPage, {
       gasStation: gasStation,
-      latlngUser: this.userLocation
+      latlngUser: this.userLocation,
+      context: this.context
     });
     gasStationModal.present();
   }
