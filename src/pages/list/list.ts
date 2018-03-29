@@ -40,7 +40,7 @@ export class ListPage {
 
   map: any;
   latlngUser: LatLng;
-  raio = 1000;
+  raio = 1500;
   auxRaio = 500;
   trying = 0;
   directionsService = new google.maps.DirectionsService;
@@ -255,9 +255,9 @@ export class ListPage {
 
               if (foundedPlace) {
                 if (foundedPlace.is_visible) {
-                  if (_.includes(place.name, 'Posto') && !_.includes(place.name, 'Borracharia' || 'Mecânica')) {
+                  // if (_.includes(place.name, 'Posto' || 'Station') && !_.includes(place.name, 'Borracharia' || 'Mecânica')) {
                     this.calculateDistance(place, this.latlngUser, foundedPlace);
-                  }
+                  // }
                 }
               } else {
                 let type = '';
@@ -300,9 +300,9 @@ export class ListPage {
                       }, (error: Error) => {
                         console.warn(error);
                       });
-                    if (_.includes(place.name, 'Posto') && !_.includes(place.name, 'Borracharia' || 'Mecânica')) {
+                    // if (_.includes(place.name, 'Posto' || 'Station') && !_.includes(place.name, 'Borracharia' || 'Mecânica')) {
                       this.calculateDistance(place, this.latlngUser, newPlace);
-                    }
+                    // }
                   }, (error: Error) => {
                     console.warn(error);
                   });
@@ -392,16 +392,16 @@ export class ListPage {
   }
 
   marshalGasStations(place: any, foundedPlace: any) {
-    let type = '';
+    let flag = '';
 
     if (place.name.toUpperCase().includes('IPIRANGA')) {
-      type = 'Ipiranga';
+      flag = 'Ipiranga';
     } else if (place.name.toUpperCase().includes('SHELL')) {
-      type = 'Shell';
+      flag = 'Shell';
     } else if (place.name.toUpperCase().toUpperCase().includes('BR') || place.name.toUpperCase().includes('PETROBRAS')) {
-      type = 'BR';
+      flag = 'BR';
     } else {
-      type = 'UNDEFINED';
+      flag = 'UNDEFINED';
     }
 
     this.gasStationsList.push({
@@ -414,10 +414,10 @@ export class ListPage {
         { type: 'ET', label: 'Etanol', value: foundedPlace.prices ? foundedPlace.prices.find(x => x.short === 'ET').amount / 1000 : 1.000 },
         { type: 'GNV', label: 'Gás natural veicular', value: foundedPlace.prices ? foundedPlace.prices.find(x => x.short === 'GNV').amount / 1000 : 1.000 }
       ],
-      name: place.name,
+      name: foundedPlace.name || place.name,
       location: place.vicinity,
       distance: place.distance,
-      type: foundedPlace.flag || type,
+      flag: foundedPlace.flag || flag,
       latitude: place.geometry.location.lat(),
       longitude: place.geometry.location.lng(),
       openNow: place.opening_hours ? place.opening_hours.open_now : true

@@ -1,7 +1,7 @@
 import { NavController, NavParams, ModalController, LoadingController, AlertController } from 'ionic-angular';
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 import $ from 'jquery';
-import _ from 'lodash';
+import * as _ from 'lodash';
 
 import { Observable } from 'rxjs/Observable';
 
@@ -88,7 +88,8 @@ export class HomePage {
     public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
     public geolocation: Geolocation,
-    private placeService: PlaceService
+    private placeService: PlaceService,
+    private cd: ChangeDetectorRef
   ) {
     this.presentLoadingDefault();
     this.getMap();
@@ -129,8 +130,9 @@ export class HomePage {
 
   loadAllGasStations() {
     if (this.gasStations) {
+      console.log(this.gasStations);
       this.gasStations.forEach((gasStation: any) => {
-        switch (gasStation.type) {
+        switch (gasStation.flag) {
           case 'Ipiranga':
           this.makeMarker(
             new LatLng(parseFloat(gasStation.latitude),
@@ -198,9 +200,10 @@ export class HomePage {
               if (foundedPlace) {
                 if (foundedPlace.is_visible) {
                   if (_.includes(place.name, 'Posto') && !_.includes(place.name, 'Borracharia' || 'Mecânica')) {
+                    this.marshalGasStations(place, foundedPlace);
                     if (i === results.length - 1) {
                       this.gasStations.forEach((gasStation: any) => {
-                        switch (gasStation.type) {
+                        switch (gasStation.flag) {
                           case 'Ipiranga':
                           this.makeMarker(
                             new LatLng(parseFloat(gasStation.latitude),
@@ -327,6 +330,42 @@ export class HomePage {
       }
 
       pagination.nextPage();
+  }
+
+  marshalGasStations(place: any, foundedPlace: any) {
+    let flag = '';
+
+    if (place.name.toUpperCase().includes('IPIRANGA')) {
+      flag = 'Ipiranga';
+    } else if (place.name.toUpperCase().includes('SHELL')) {
+      flag = 'Shell';
+    } else if (place.name.toUpperCase().toUpperCase().includes('BR') || place.name.toUpperCase().includes('PETROBRAS')) {
+      flag = 'BR';
+    } else {
+      flag = 'UNDEFINED';
+    }
+
+    this.gasStations.push({
+      id: foundedPlace.id,
+      place_id: foundedPlace.google_place_id,
+      values: foundedPlace.values || [
+        { type: 'GC', label: 'Gasolina comum', value: foundedPlace.prices ? foundedPlace.prices.find(x => x.short === 'GC').amount / 1000 : 1.000 },
+        { type: 'GA', label: 'Gasolina aditivada', value: foundedPlace.prices ? foundedPlace.prices.find(x => x.short === 'GA').amount / 1000 : 1.000 },
+        { type: 'DI', label: 'Diesel', value: foundedPlace.prices ? foundedPlace.prices.find(x => x.short === 'DI').amount / 1000 : 1.000 },
+        { type: 'ET', label: 'Etanol', value: foundedPlace.prices ? foundedPlace.prices.find(x => x.short === 'ET').amount / 1000 : 1.000 },
+        { type: 'GNV', label: 'Gás natural veicular', value: foundedPlace.prices ? foundedPlace.prices.find(x => x.short === 'GNV').amount / 1000 : 1.000 }
+      ],
+      name: place.name,
+      location: place.vicinity,
+      distance: place.distance,
+      flag: foundedPlace.flag || flag,
+      latitude: place.geometry.location.lat(),
+      longitude: place.geometry.location.lng(),
+      openNow: place.opening_hours ? place.opening_hours.open_now : true
+    });
+
+    this.cd.markForCheck();
+    this.cd.detectChanges();
   }
 
   loadMap() {
