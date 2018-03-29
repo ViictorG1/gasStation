@@ -1,6 +1,7 @@
 import { NavController, NavParams, ModalController, LoadingController, AlertController } from 'ionic-angular';
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import $ from 'jquery';
+import _ from 'lodash';
 
 import { Observable } from 'rxjs/Observable';
 

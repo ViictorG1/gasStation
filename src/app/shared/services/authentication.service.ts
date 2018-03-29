@@ -54,8 +54,8 @@ export class AuthenticationService extends RestClientService {
   }
 
   createDevice(device: any, pushToken: string, context: any) {
-    const body = JSON.stringify({ name: 'Moto G(4)', push_token: '', spec: JSON.stringify({ platform: 'Android', uuid: '46544874848', version: '6.6.2' })});
-    // const body = JSON.stringify({ name: device.model, push_token: pushToken, spec: device.spec });
+    // const body = JSON.stringify({ name: 'Moto G(4)', push_token: '0102030405', spec: JSON.stringify({ platform: 'Android', uuid: '46544874848', version: '6.6.2' })});
+    const body = JSON.stringify({ name: device.model, push_token: pushToken, spec: device.spec });
 
     return this.http
       .post(this.collectionDevicePath(), body, this.buildRequestOptions({}, { uid: context.uid, client: context.client, token: context.token }))

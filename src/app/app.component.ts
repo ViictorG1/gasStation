@@ -45,31 +45,6 @@ export class GasStationApp {
 
   initializeApp() {
     this.platform.ready().then(() => {
-      const options: PushOptions = {
-        android: { senderID: this.device.uuid },
-        ios: {
-          alert: 'true',
-          badge: true,
-          sound: 'false'
-        },
-        browser: {
-          pushServiceURL: 'http://push.api.phonegap.com/v1/push'
-        }
-      };
-
-      const pushObject: PushObject = this.push.init(options);
-      let pushToken = '';
-
-      pushObject.on('registration').subscribe((registration: any) => {
-        pushToken = registration.registrationId;
-
-        let youralert = this.alertCtrl.create({
-          title: 'New Push notification',
-          message: pushToken
-        });
-        youralert.present();
-      });
-
       this.headerColor.tint('#4B84FB');
       this.statusBar.styleDefault();
       this.splashScreen.hide();
@@ -81,7 +56,31 @@ export class GasStationApp {
       let serialized = localStorage.getItem('br.com.gasin');
       let context = serialized ? JSON.parse(serialized) : undefined;
 
-      if (context) {
+      if (!context) {
+        let password = this.generateRandomHash();
+
+        this.userService
+        .createUser({ nickname: 'anonymous', email: `${this.generateRandomHash()}@gasin.com.br`, password: password })
+        .subscribe((user: any) => {
+          this.authenticationService
+            .login(user.email, user.password)
+            .subscribe((context: any) => {
+              let serialized = localStorage.getItem('br.com.gasin');
+              let ctxt = serialized ? JSON.parse(serialized) : undefined;
+
+              this.authenticationService.createDevice(device, this.device.uuid, ctxt)
+                .subscribe((response: boolean) => {
+                  // DEVICE CREATED
+                }, (error: Error) => {
+                  // ERROR DEVICE
+                });
+            }, (error: any) => {
+              console.warn(error);
+            });
+        }, (error: any) => {
+          console.warn(error);
+        });
+      } else {
         // IF HAVE A CONTEXT IN STORE
         // this.authenticationService
         // .login(context.user.data.email, context.password)
@@ -97,48 +96,35 @@ export class GasStationApp {
         // }, (error: any) => {
         //   console.warn(error);
         // });
-      } else {
-        let password = this.generateRandomHash();
-
-        this.userService
-        .createUser({ nickname: 'anonymous', email: `${this.generateRandomHash()}@gasin.com.br`, password: password })
-        .subscribe((user: any) => {
-          this.authenticationService
-            .login(user.email, user.password)
-            .subscribe((context: any) => {
-              let serialized = localStorage.getItem('br.com.gasin');
-              let ctxt = serialized ? JSON.parse(serialized) : undefined;
-
-              this.authenticationService.createDevice(device, pushToken, ctxt)
-                .subscribe((response: boolean) => {
-                  // DEVICE CREATED
-                }, (error: Error) => {
-                  // ERROR DEVICE
-                });
-            }, (error: any) => {
-              console.warn(error);
-            });
-        }, (error: any) => {
-          console.warn(error);
-        });
       }
 
-      // pushObject.on('error').subscribe((error) => {
-      //   let youralert = this.alertCtrl.create({
-      //     title: 'New Push notification',
-      //     message: error.message
-      //   });
-      //   youralert.present();
-      // });
-
-      pushObject.on('notification').subscribe((notification: any) => {
-        let youralert = this.alertCtrl.create({
-          title: 'New Push notification',
-          message: notification.message
-        });
-        youralert.present();
-      });
+      this.pushSetup();
     });
+  }
+
+  pushSetup() {
+    if (!this.platform.is('cordova')) {
+      console.warn('Push notifications not initialized. Cordova is not available - Run in physical device');
+      return;
+    }
+    console.log(this.platform);
+
+    const options: PushOptions = {
+      android: { senderID: '256624249194' },
+      ios: {
+        alert: 'true',
+        badge: true,
+        sound: 'false'
+      }
+    };
+
+    const pushObject: PushObject = this.push.init(options);
+
+    pushObject.on('notification').subscribe((notification: any) => console.log('Received a notification', notification));
+
+    pushObject.on('registration').subscribe((registration: any) => console.log('Device registered', registration));
+
+    pushObject.on('error').subscribe(error => console.error('Error with Push plugin', error));
   }
 
   openPage(page) {
