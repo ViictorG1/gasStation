@@ -2,25 +2,14 @@
   <button (click)="navCtrl.pop()" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
   <div class="content-gas pb-10">
     <ion-row (click)="updateFlag()">
-<<<<<<< HEAD
-      <ion-col [hidden]="gasStation.flag==='Ipiranga'" class="ipiranga-1 w-100 h-50" col-6></ion-col>
-      <ion-col [hidden]="gasStation.flag==='Ipiranga'" class="ipiranga-2 w-100 h-50" col-6></ion-col>
-      <ion-col [hidden]="gasStation.flag==='Shell'" class="shell-1 w-100 h-50" col-6></ion-col>
-      <ion-col [hidden]="gasStation.flag==='Shell'" class="shell-2 w-100 h-50" col-6></ion-col>
-      <ion-col [hidden]="gasStation.flag==='BR'" class="br-1 w-100 h-50" col-6></ion-col>
-      <ion-col [hidden]="gasStation.flag==='BR'" class="br-2 w-100 h-50" col-6></ion-col>
-      <ion-col [hidden]="gasStation.flag==='UNDEFINED'" class="undefined-color-1 w-100 h-50" col-6></ion-col>
-      <ion-col [hidden]="gasStation.flag==='UNDEFINED'" class="undefined-color-2 w-100 h-50" col-6></ion-col>
-=======
-      <ion-col [hidden]="gasStation.flag!='Ipiranga'" class="ipiranga-1 w-100 h-50" col-6></ion-col>
-      <ion-col [hidden]="gasStation.flag!='Ipiranga'" class="ipiranga-2 w-100 h-50" col-6></ion-col>
-      <ion-col [hidden]="gasStation.flag!='Shell'" class="shell-1 w-100 h-50" col-6></ion-col>
-      <ion-col [hidden]="gasStation.flag!='Shell'" class="shell-2 w-100 h-50" col-6></ion-col>
-      <ion-col [hidden]="gasStation.flag!='BR'" class="br-1 w-100 h-50" col-6></ion-col>
-      <ion-col [hidden]="gasStation.flag!='BR'" class="br-2 w-100 h-50" col-6></ion-col>
-      <ion-col [hidden]="gasStation.flag!='UNDEFINED'" class="undefined-color-1 w-100 h-50" col-6></ion-col>
-      <ion-col [hidden]="gasStation.flag!='UNDEFINED'" class="undefined-color-2 w-100 h-50" col-6></ion-col>
->>>>>>> 28f15586e4c27741bfa1ea3df5ac1779600edd63
+      <ion-col [hidden]="gasStation.flag!=='Ipiranga'" class="ipiranga-1 w-100 h-50" col-6></ion-col>
+      <ion-col [hidden]="gasStation.flag!=='Ipiranga'" class="ipiranga-2 w-100 h-50" col-6></ion-col>
+      <ion-col [hidden]="gasStation.flag!=='Shell'" class="shell-1 w-100 h-50" col-6></ion-col>
+      <ion-col [hidden]="gasStation.flag!=='Shell'" class="shell-2 w-100 h-50" col-6></ion-col>
+      <ion-col [hidden]="gasStation.flag!=='BR'" class="br-1 w-100 h-50" col-6></ion-col>
+      <ion-col [hidden]="gasStation.flag!=='BR'" class="br-2 w-100 h-50" col-6></ion-col>
+      <ion-col [hidden]="gasStation.flag!=='UNDEFINED'" class="undefined-color-1 w-100 h-50" col-6></ion-col>
+      <ion-col [hidden]="gasStation.flag!=='UNDEFINED'" class="undefined-color-2 w-100 h-50" col-6></ion-col>
     </ion-row>
     <ion-row [class.mb-20]="!editingPrice" class="text-center mt-10 p-10">
       <ion-col col-12>
