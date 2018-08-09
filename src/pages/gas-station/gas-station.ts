@@ -1,9 +1,8 @@
 import { Component, Output, EventEmitter, AfterViewInit, ChangeDetectorRef } from '@angular/core';
-import { NavController, NavParams, ViewController, Keyboard } from 'ionic-angular';
+import { NavController, NavParams, ViewController } from 'ionic-angular';
 import { LaunchNavigator, LaunchNavigatorOptions } from '@ionic-native/launch-navigator';
 import { AlertController } from 'ionic-angular';
 import * as $ from 'jquery';
-import * as _ from 'lodash';
 
 import { InteractionService } from '../../app/shared/services/interaction.service';
 import { PlaceService } from '../../app/shared/services/place.service';

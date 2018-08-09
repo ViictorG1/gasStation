@@ -469,11 +469,7 @@ export class HomePage {
   }
 
   openSearchButton() {
-    if (this.searchButton) {
-      this.searchButton = false;
-    } else {
-      this.searchButton = true;
-    }
+    this.searchButton = !this.searchButton;
   }
 
   searchGasStations(place: any) {

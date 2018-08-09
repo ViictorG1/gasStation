@@ -11,7 +11,7 @@ import { ContextService } from '../../app/shared/services/context.service';
 
 import { LatLng } from '@ionic-native/google-maps';
 import { Geolocation } from '@ionic-native/geolocation';
-import { HomePage, GasStationPage } from '../index';
+import { HomePage } from '../index';
 
 import { IntroPage } from '../../pages/intro/intro';
 import { PlaceService } from '../../app/shared/services/place.service';

@@ -5,8 +5,6 @@ import * as _ from 'lodash';
 
 import { RestClientService } from './rest-client.service';
 
-import { Storage } from '@ionic/storage';
-import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
 import { ContextService } from './context.service';
 
 @Injectable()
