@@ -14,7 +14,6 @@ export class AuthenticationService extends RestClientService {
   redirectUrl: string;
 
   private apiPath: string;
-  private apiDevicePath: string;
   private context: any;
 
   constructor(
@@ -52,7 +51,6 @@ export class AuthenticationService extends RestClientService {
   }
 
   createDevice(device: any, pushToken: string, context: any) {
-    // const body = JSON.stringify({ name: 'Moto G(4)', push_token: '0102030405', spec: JSON.stringify({ platform: 'Android', uuid: '46544874848', version: '6.6.2' })});
     const body = JSON.stringify({ name: device.model, push_token: pushToken, spec: device.spec });
 
     return this.http
@@ -65,12 +63,12 @@ export class AuthenticationService extends RestClientService {
       .catch(this.handleError);
   }
 
-  getDevice(id: number, context: any) {
+  getDevice(context: any) {
 
     return this.http
       .get(this.collectionDevicePath(), this.buildRequestOptions({}, { uid: context.uid, client: context.client, token: context.token }))
       .map((response: Response) => {
-        const data = this.extract<any>(response);
+        // const data = this.extract<any>(response);
         return true;
       })
       .catch(this.handleError);
@@ -91,10 +89,6 @@ export class AuthenticationService extends RestClientService {
     if (context.deviceId) {
       this.contextService.updateContext(this.context);
     }
-  }
-
-  private cleanContext() {
-    localStorage.removeItem('br.com.gasin');
   }
 
   private collectionSignInPath(): string {

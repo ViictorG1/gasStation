@@ -1,5 +1,5 @@
 page-home {
-  #map { 
+  #map {
     height: 100%;
     width: 100%;
   }
@@ -29,6 +29,7 @@ ion-header {
 .controls {
   border: 1px solid transparent;
   border-radius: 2px 0 0 2px;
+  visibility: hidden;
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   height: 32px;

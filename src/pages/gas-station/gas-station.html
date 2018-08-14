@@ -55,25 +55,25 @@
       </ion-row>
       <ion-row class="values">
         <ion-col col-6 text-center>
-          <span [class.adjust-label]="editingPrice.type === 'et'" [hidden]="editingPrice.type === 'di'" (click)="changeValue('di', gasStation.values[2].value)" id="di" class="price">
+          <span [class.adjust-label]="editingPrice.type === 'di'" [hidden]="editingPrice.type === 'et'" (click)="changeValue('et', gasStation.values[2].value)" id="di" class="price">
             <b>
               <span class="rs">R$</span>
               {{ (gasStation.values | filterBy:'type':'ET').value }}
             </b>
           </span>
-          <ion-item *ngIf="editingPrice.type === 'di'" class="input-price">
+          <ion-item *ngIf="editingPrice.type === 'et'" class="input-price">
             <ion-label color="primary" stacked>Atualizar valor</ion-label>
             <ion-input type="text" placeholder="0.000" [brmasker]="{ mask:'0.000', len:5, type:'num' }" [(ngModel)]="editingPrice.newValue" (keyup.enter)="handleEnter()"></ion-input>
           </ion-item>
         </ion-col>
         <ion-col col-6 text-center>
-          <span [class.adjust-label]="editingPrice.type === 'di'" [hidden]="editingPrice.type === 'et'" (click)="changeValue('et', gasStation.values[3].value)" id="et" class="price">
+          <span [class.adjust-label]="editingPrice.type === 'et'" [hidden]="editingPrice.type === 'di'" (click)="changeValue('di', gasStation.values[3].value)" id="et" class="price">
             <b>
               <span class="rs">R$</span>
               {{ (gasStation.values | filterBy:'type':'DI').value }}
             </b>
           </span>
-          <ion-item *ngIf="editingPrice.type === 'et'" class="input-price">
+          <ion-item *ngIf="editingPrice.type === 'di'" class="input-price">
             <ion-label color="primary" stacked>Atualizar valor</ion-label>
             <ion-input type="text" placeholder="0.000" [brmasker]="{ mask:'0.000', len:5, type:'num' }" [(ngModel)]="editingPrice.newValue" (keyup.enter)="handleEnter()"></ion-input>
           </ion-item>

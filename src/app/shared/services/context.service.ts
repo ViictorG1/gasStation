@@ -3,9 +3,6 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import * as _ from 'lodash';
 
-// import { Context } from '../context';
-import { UserService } from './user.service';
-
 @Injectable()
 export class ContextService {
   contextChangesSubject: BehaviorSubject<any>;
@@ -13,9 +10,7 @@ export class ContextService {
 
   private context: any;
 
-  constructor(
-    private usersService: UserService
-  ) {
+  constructor() {
     this.contextChangesSubject = new BehaviorSubject<any>(this.context);
     this.contextChanges$ = this.contextChangesSubject.asObservable();
 

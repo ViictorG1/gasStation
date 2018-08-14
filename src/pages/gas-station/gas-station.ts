@@ -109,11 +109,11 @@ export class GasStationPage implements AfterViewInit {
       interaction_type_id: "801",
       place_id: this.gasStation.id,
       description: [
-        { short: 'GC', label: 'Gasolina comum', amount: (this.editingPrice.type === 'gc') ? this.editingPrice.newValue * 1000 : this.gasStation.values.find(x => x.type === 'GC').value * 1000 },
-        { short: 'GA', label: 'Gasolina aditivada', amount: (this.editingPrice.type === 'ga') ? this.editingPrice.newValue * 1000 : this.gasStation.values.find(x => x.type === 'GA').value * 1000 },
+        { short: 'GC', label: 'Gasolina Comum', amount: (this.editingPrice.type === 'gc') ? this.editingPrice.newValue * 1000 : this.gasStation.values.find(x => x.type === 'GC').value * 1000 },
+        { short: 'GA', label: 'Gasolina Aditivada', amount: (this.editingPrice.type === 'ga') ? this.editingPrice.newValue * 1000 : this.gasStation.values.find(x => x.type === 'GA').value * 1000 },
         { short: 'DI', label: 'Diesel', amount: (this.editingPrice.type === 'di') ? this.editingPrice.newValue * 1000 : this.gasStation.values.find(x => x.type === 'DI').value * 1000 },
         { short: 'ET', label: 'Etanol', amount: (this.editingPrice.type === 'et') ? this.editingPrice.newValue * 1000 : this.gasStation.values.find(x => x.type === 'ET').value * 1000 },
-        { short: 'GNV', label: 'Gás natural veicular', amount: (this.editingPrice.type === 'gnv') ? this.editingPrice.newValue * 1000 : this.gasStation.values.find(x => x.type === 'GNV').value * 1000 }
+        { short: 'GNV', label: 'Gás Natural Veicular', amount: (this.editingPrice.type === 'gnv') ? this.editingPrice.newValue * 1000 : this.gasStation.values.find(x => x.type === 'GNV').value * 1000 }
       ]
     }
     this.interactionService.createInteraction(interaction, this.context)

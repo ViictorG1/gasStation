@@ -26,20 +26,26 @@ export class HomePage {
   context: any;
   placeIds: string[] = [];
 
+  input: HTMLElement;
+  searchButton = false;
+
   map: any;
   service: any;
   place: any;
   userLocation: any;
   gasStationLocation: any;
+
   listPage = { title: 'List', component: ListPage };
   loading: any;
+
   gasStation: any;
   gasStations: any[] = [];
   filteredGasStations: any[] = [];
-  backIsHide: boolean = false;
-  searchButton: boolean = false;
+  backIsHide = false;
+
   directionsService = new google.maps.DirectionsService;
   directionsDisplay = new google.maps.DirectionsRenderer;
+
   iconsIpiranga = {
     gasStation: new google.maps.MarkerImage(
       'assets/images/ipirangam.svg',
@@ -99,21 +105,31 @@ export class HomePage {
     this.navCtrl.popToRoot();
   }
 
+  openSearchButton() {
+    this.searchButton = !this.searchButton;
+    if (this.searchButton) {
+      this.input.setAttribute('style', 'visibility: visible');
+    } else {
+      this.input.setAttribute('style', 'visibility: hidden');
+    }
+  }
+
   initSearchComponent() {
     const options = {
-      componentRestrictions: {country: "bra"}
+      componentRestrictions: { country: "bra" }
     };
 
-    let input = document.getElementById('pac-input');
-    let searchBox = new google.maps.places.Autocomplete(input, options);
+    this.input = document.getElementById('pac-input');
+    this.input.setAttribute('style', 'visibility: hidden');
+    const searchBox = new google.maps.places.Autocomplete(this.input, options);
     searchBox.setTypes(['geocode']);
-    this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+    this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(this.input);
 
     this.map.addListener('bounds_changed', (a: any) => {
       searchBox.setBounds(this.map.getBounds());
     });
     searchBox.addListener('place_changed', (a: any) => {
-      let place = searchBox.getPlace();
+      const place = searchBox.getPlace();
       this.place = place;
       this.nearbyGasStations();
       this.searchGasStations(place);
@@ -171,7 +187,7 @@ export class HomePage {
   nearbyGasStations() {
     this.gasStations = [];
 
-    let params = {
+    const params = {
       location: { lat: this.place.geometry.location.lat(), lng: this.place.geometry.location.lng() },
       radius: 1500,
       rankby: 'distance',
@@ -252,7 +268,7 @@ export class HomePage {
                   type = 'UNDEFINED';
                 }
 
-                let createPlace = {
+                const createPlace = {
                   name: place.name,
                   google_place_id: place.place_id,
                   is_visible: true,
@@ -262,18 +278,18 @@ export class HomePage {
 
                 this.placeService.createPlace(createPlace, this.context)
                   .subscribe((newPlace: any) => {
-                    let interaction = {
-                      device_id: this.context.deviceId,
-                      interaction_type_id: "801",
-                      place_id: newPlace.id,
-                      description: [
-                        { short: 'GC', label: 'Gasolina comum', amount: 1000 },
-                        { short: 'GA', label: 'Gasolina aditivada', amount: 1000 },
-                        { short: 'DI', label: 'Diesel', amount: 1000 },
-                        { short: 'ET', label: 'Etanol', amount: 1000 },
-                        { short: 'GNV', label: 'Gás natural veicular', amount: 1000 }
-                      ]
-                    }
+                    // let interaction = {
+                    //   device_id: this.context.deviceId,
+                    //   interaction_type_id: "801",
+                    //   place_id: newPlace.id,
+                    //   description: [
+                    //     { short: 'GC', label: 'Gasolina comum', amount: 1000 },
+                    //     { short: 'GA', label: 'Gasolina aditivada', amount: 1000 },
+                    //     { short: 'DI', label: 'Diesel', amount: 1000 },
+                    //     { short: 'ET', label: 'Etanol', amount: 1000 },
+                    //     { short: 'GNV', label: 'Gás natural veicular', amount: 1000 }
+                    //   ]
+                    // }
                     // this.interactionService.createInteraction(interaction, this.context)
                     //   .subscribe((data: any) => {
                     //     console.log(data);
@@ -457,17 +473,12 @@ export class HomePage {
       alert.present();
     });
   }
-
   presentLoadingDefault() {
     this.loading = this.loadingCtrl.create({
       content: 'Carregando mapa'
     });
 
     this.loading.present();
-  }
-
-  openSearchButton() {
-    this.searchButton = !this.searchButton;
   }
 
   searchGasStations(place: any) {

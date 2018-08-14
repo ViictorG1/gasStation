@@ -84,14 +84,6 @@ export class UserService extends RestClientService {
   //     .catch(this.handleError);
   // }
 
-  private marshalUser(user: any): any {
-    return {
-      nickname: user.nickname,
-      email: user.email,
-      password: user.password
-    };
-  }
-
   private unmarshalUser(responseData: any, password: string): any {
     return {
       id: responseData.data.id,

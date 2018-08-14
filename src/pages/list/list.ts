@@ -56,11 +56,11 @@ export class ListPage {
   service: any;
 
   types = [
-    { type: 'GC', label: 'Gasolina comum', number: 0 },
-    { type: 'GA', label: 'Gasolina aditivada', number: 1 },
+    { type: 'GC', label: 'Gasolina Comum', number: 0 },
+    { type: 'GA', label: 'Gasolina Aditivada', number: 1 },
     { type: 'DI', label: 'Diesel', number: 2 },
     { type: 'ET', label: 'Etanol', number: 3 },
-    { type: 'GNV', label: 'Gás natural veicular', number: 4 }
+    { type: 'GNV', label: 'Gás Natural Veicular', number: 4 }
   ];
   typeCounter = 0;
   fuelType: any;
@@ -88,9 +88,6 @@ export class ListPage {
         this.storage.set('intro-done', true);
         this.navCtrl.setRoot(IntroPage);
       } else {
-        // let serialized = localStorage.getItem('br.com.gasin');
-        // let context = serialized ? JSON.parse(serialized) : {};
-
         this.contextService.contextChanges$.subscribe((context: any) => {
           if (context) {
             if (context.isLoggedIn) {
@@ -213,15 +210,13 @@ export class ListPage {
 
     this.map = new google.maps.Map(document.getElementById('map'));
 
-    let params = {
+    const params = {
       location: { lat: this.latlngUser.lat, lng: this.latlngUser.lng },
       radius: this.raio,
       rankby: 'distance',
       type: 'gas_station',
       key: 'AIzaSyC4ac6cxMs7NqDfE7SWRqnJIlbg5PyhWcc'
     }
-    // lat: -27.616596, lng: -48.390837
-
     this.service = new google.maps.places.PlacesService(this.map);
     this.service.nearbySearch(params, this.processResults.bind(this), );
   }
@@ -292,9 +287,7 @@ export class ListPage {
                       }, (error: Error) => {
                         console.warn(error);
                       });
-                    // if (_.includes(place.name, 'Posto' || 'Station') && !_.includes(place.name, 'Borracharia' || 'Mecânica')) {
                       this.calculateDistance(place, this.latlngUser, newPlace);
-                    // }
                   }, (error: Error) => {
                     console.warn(error);
                   });

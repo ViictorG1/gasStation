@@ -2,6 +2,36 @@
   font-size: 0.8em;
 }
 
+.ellipsis {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.distance {
+  position: relative;
+  top: 8px;
+  margin-right: 0px !important;
+}
+
+.select-md {
+  padding: 0px 5px 14px 7px;
+}
+
+.title-list-gas {
+  font-weight: bold;
+  margin-top: 16px;
+  font-size: 1.2em;
+}
+
+.fuel-type-label {
+  font-size: 0.9em;
+}
+
+.order-by > .item-inner > .input-wrapper {
+  height: 35px
+}
+
 .item-md {
   padding-left: 0px;
 }
@@ -61,10 +91,15 @@
 }
 
 .order-by-container {
-  padding: 0px 25%;
+  height: 35px;
+  background-color: #3578ef;
+  width: 70%;
+  margin: 0px 15%;
+  padding: 7px 5px;
+  border-radius: 2px;
 }
 
 .change-fuel-icon {
   background-color: #3578ef;
-  border-radius: 5px;
+  border-radius: 2px;
 }

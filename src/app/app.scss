@@ -15,6 +15,10 @@
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
 
+.cabin-font {
+  font-family: 'Cabin Condensed', sans-serif !important;
+}
+
 .loading-24 {
   display: inline-block;
   background-image:url('../assets/images/loading-24.gif');
@@ -369,6 +373,10 @@ ion-popover > .popover-wrapper > .popover-content {
   top: 45.5px !important;
   left: 25% !important;
   transform-origin: right top 0px !important;
+}
+
+.flag-size {
+  height: 20px;
 }
 
 .ipiranga-1 {

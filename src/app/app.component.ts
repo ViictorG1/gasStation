@@ -79,22 +79,6 @@ export class GasStationApp {
         }, (error: any) => {
           console.warn(error);
         });
-      } else {
-        // IF HAVE A CONTEXT IN STORE
-        // this.authenticationService
-        // .login(context.user.data.email, context.password)
-        // .subscribe(() => {
-        //   let serialized = localStorage.getItem('br.com.gasin');
-        //   let ctxt = serialized ? JSON.parse(serialized) : undefined;
-          // this.authenticationService.getDevice(1, ctxt)
-          //   .subscribe((response: boolean) => {
-          //     // DEVICE FOUND
-          //   }, (error: Error) => {
-          //     // ERROR DEVICE
-          //   });
-        // }, (error: any) => {
-        //   console.warn(error);
-        // });
       }
 
       this.pushSetup();
