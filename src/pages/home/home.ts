@@ -130,7 +130,6 @@ export class HomePage {
 
   loadAllGasStations() {
     if (this.gasStations) {
-      console.log(this.gasStations);
       this.gasStations.forEach((gasStation: any) => {
         switch (gasStation.flag) {
           case 'Ipiranga':
@@ -349,11 +348,11 @@ export class HomePage {
       id: foundedPlace.id,
       place_id: foundedPlace.google_place_id,
       values: foundedPlace.values || [
-        { type: 'GC', label: 'Gasolina comum', value: foundedPlace.prices ? foundedPlace.prices.find(x => x.short === 'GC').amount / 1000 : 1.000 },
-        { type: 'GA', label: 'Gasolina aditivada', value: foundedPlace.prices ? foundedPlace.prices.find(x => x.short === 'GA').amount / 1000 : 1.000 },
-        { type: 'DI', label: 'Diesel', value: foundedPlace.prices ? foundedPlace.prices.find(x => x.short === 'DI').amount / 1000 : 1.000 },
-        { type: 'ET', label: 'Etanol', value: foundedPlace.prices ? foundedPlace.prices.find(x => x.short === 'ET').amount / 1000 : 1.000 },
-        { type: 'GNV', label: 'Gás natural veicular', value: foundedPlace.prices ? foundedPlace.prices.find(x => x.short === 'GNV').amount / 1000 : 1.000 }
+        { type: 'GC', label: 'Gasolina comum', value: foundedPlace.prices.length ? foundedPlace.prices.find(x => x.short === 'GC').amount / 1000 : 1.000 },
+        { type: 'GA', label: 'Gasolina aditivada', value: foundedPlace.prices.length ? foundedPlace.prices.find(x => x.short === 'GA').amount / 1000 : 1.000 },
+        { type: 'DI', label: 'Diesel', value: foundedPlace.prices.length ? foundedPlace.prices.find(x => x.short === 'DI').amount / 1000 : 1.000 },
+        { type: 'ET', label: 'Etanol', value: foundedPlace.prices.length ? foundedPlace.prices.find(x => x.short === 'ET').amount / 1000 : 1.000 },
+        { type: 'GNV', label: 'Gás natural veicular', value: foundedPlace.prices.length ? foundedPlace.prices.find(x => x.short === 'GNV').amount / 1000 : 1.000 }
       ],
       name: place.name,
       location: place.vicinity,
@@ -392,7 +391,6 @@ export class HomePage {
 
     if (this.gasStation) {
       this.loadAllGasStations();
-      console.log(this.gasStation);
       this.addInfoWindow(this.gasStation);
       this.gasStationLocation = new LatLng(parseFloat(this.gasStation.latitude), parseFloat(this.gasStation.longitude));
       this.map.setZoom(17);

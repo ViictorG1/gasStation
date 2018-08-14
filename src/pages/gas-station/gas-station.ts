@@ -35,7 +35,6 @@ export class GasStationPage implements AfterViewInit {
     private placeService: PlaceService
   ) {
     this.gasStation = this.navParams.get('gasStation');
-    console.log(this.gasStation);
     this.latlngUser = this.navParams.get('latlngUser');
     this.context = this.navParams.get('context');
   }
@@ -63,15 +62,15 @@ export class GasStationPage implements AfterViewInit {
       app = this.launchNavigator.APP.USER_SELECT;
     }
 
-    let options: LaunchNavigatorOptions = {
+    const options: LaunchNavigatorOptions = {
       start: this.latlngUser,
       app: this.launchNavigator.APP.USER_SELECT
     };
 
     this.launchNavigator.navigate([this.gasStation.latitude, this.gasStation.longitude], options)
       .then(
-        success => console.log('Launched navigator'),
-        error => console.log('Error launching navigator', error)
+        success => console.warn('Launched navigator'),
+        error => console.warn('Error launching navigator', error)
       );
   }
 
@@ -89,7 +88,6 @@ export class GasStationPage implements AfterViewInit {
     this.gasStation.flag = 'Shell';
     this.placeService.updatePlace(this.gasStation, this.context)
       .subscribe((gasStation: any) => {
-        console.log(gasStation)
         this.cd.detectChanges();
       }, (error: Error) => {
         console.warn(error);
@@ -98,9 +96,15 @@ export class GasStationPage implements AfterViewInit {
 
   handleEnter() {
     this.presentAlert(this.editingPrice);
+    if (this.editingPrice.length == 2) {
+      this.editingPrice = this.editingPrice + "99";
+    } else if (this.editingPrice.length == 3) {
+      this.editingPrice = this.editingPrice + "9";
+    }
+
     (this.editingPrice.type === 'gc') ? this.editingPrice.newValue * 1000 : this.gasStation.values.find(x => x.type === 'GC').value * 1000
 
-    let interaction = {
+    const interaction = {
       device_id: this.context.deviceId,
       interaction_type_id: "801",
       place_id: this.gasStation.id,
@@ -113,11 +117,10 @@ export class GasStationPage implements AfterViewInit {
       ]
     }
     this.interactionService.createInteraction(interaction, this.context)
-    .subscribe((data: any) => {
-      console.log(data);
-    }, (error: Error) => {
-      console.warn(error);
-    });
+      .subscribe((data: any) => {
+      }, (error: Error) => {
+        console.warn(error);
+      });
 
     setTimeout(() => {
       this.editingPrice.type = '';

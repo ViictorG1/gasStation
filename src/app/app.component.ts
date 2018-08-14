@@ -45,22 +45,21 @@ export class GasStationApp {
 
   initializeApp() {
     this.platform.ready().then(() => {
-      this.headerColor.tint('#4B84FB');
-      this.statusBar.styleDefault();
+      this.headerColor.tint('#488aff');
+      this.statusBar.backgroundColorByHexString('#488aff');
       this.splashScreen.hide();
-      let device = {
+
+      const device = {
         model: this.device.model,
         spec: JSON.stringify({ platform: this.device.platform, uuid: this.device.uuid, version: this.device.cordova })
       }
 
-      let serialized = localStorage.getItem('br.com.gasin');
-      let context = serialized ? JSON.parse(serialized) : undefined;
+      const serialized = localStorage.getItem('br.com.gasin');
+      const context = serialized ? JSON.parse(serialized) : undefined;
 
       if (!context) {
-        let password = this.generateRandomHash();
-
         this.userService
-        .createUser({ nickname: 'anonymous', email: `${this.generateRandomHash()}@gasin.com.br`, password: password })
+        .createUser({ nickname: 'anonymous', email: `${this.generateRandomHash()}@gasin.com.br`, password: this.generateRandomHash() })
         .subscribe((user: any) => {
           this.authenticationService
             .login(user.email, user.password)
@@ -107,8 +106,6 @@ export class GasStationApp {
       console.warn('Push notifications not initialized. Cordova is not available - Run in physical device');
       return;
     }
-    console.log(this.platform);
-
     const options: PushOptions = {
       android: { senderID: '256624249194' },
       ios: {

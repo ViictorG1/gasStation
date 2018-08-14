@@ -40,7 +40,7 @@ export class ListPage {
 
   map: any;
   latlngUser: LatLng;
-  raio = 1500;
+  raio = 2000;
   auxRaio = 500;
   trying = 0;
   directionsService = new google.maps.DirectionsService;
@@ -80,10 +80,6 @@ export class ListPage {
   ) {
     this.gasStationsObservable = <BehaviorSubject<any[]>>new BehaviorSubject([]);
     this.fuelType = { type: 'GC', label: 'Gasolina comum', number: 0 };
-  }
-
-  ionViewDidEnter() {
-    console.log(this.context);
   }
 
   ionViewDidLoad() {
@@ -130,12 +126,9 @@ export class ListPage {
 
     this.interactionService.createInteraction({ interaction_type_id: '100', place_id: this.gasStation.id, description: 'List page' }, this.context)
       .subscribe((data: any) => {
-        console.log(data);
       }, (error: Error) => {
         console.warn(error);
       });
-
-    console.log(gasStation);
 
     this.navCtrl.push(HomePage, {
       gasStation: gasStation,
@@ -296,7 +289,6 @@ export class ListPage {
                     }
                     this.interactionService.createInteraction(interaction, this.context)
                       .subscribe((data: any) => {
-                        console.log(data);
                       }, (error: Error) => {
                         console.warn(error);
                       });
@@ -328,8 +320,6 @@ export class ListPage {
     }, (response, status) => {
       if (status === 'OK') {
         this.marshalGasStations(_.assign(place, { distance: response.routes[0].legs[0].distance.value}), foundedPlace);
-      } else {
-        console.log(place);
       }
       this.cd.detectChanges();
     });
@@ -436,7 +426,7 @@ export class ListPage {
   }
 
   openMap() {
-    this.navCtrl.push(HomePage, { gasStations: this.gasStationsList, backIsHide: true });
+    this.navCtrl.push(HomePage, { gasStations: this.gasStationsList, backIsHide: true, context: this.context });
   }
 
 }

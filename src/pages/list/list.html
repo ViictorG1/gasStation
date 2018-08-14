@@ -3,9 +3,9 @@
     <div class="w-100 order-by-container">
       <ion-item class="order-by">
         <ion-select placeholder="Escolha" (ngModelChange)="orderBy($event)" [(ngModel)]="orderByAny" interface="popover">
-          <ion-option value="values[.find(x => x.type === fuelType.type).value">Preço</ion-option>
+          <ion-option value="values[{{ fuelType.number }}].value">Preço</ion-option>
           <ion-option value="distance">Distancia</ion-option>
-          <ion-option value="type">Bandeira</ion-option>
+          <ion-option value="flag">Bandeira</ion-option>
         </ion-select>
       </ion-item>
     </div>
