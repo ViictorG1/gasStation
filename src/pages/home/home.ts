@@ -99,6 +99,7 @@ export class HomePage {
   ) {
     this.presentLoadingDefault();
     this.getMap();
+    this.searchButton = true;
   }
 
   openList() {
