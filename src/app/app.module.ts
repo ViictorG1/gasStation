@@ -12,6 +12,10 @@ import { ContextService } from './shared/services/context.service';
 import { PlaceService } from './shared/services/place.service';
 import { InteractionService } from './shared/services/interaction.service';
 
+// PIPE
+
+import { MomentPipe } from './shared/pipes/moment.pipe';
+
 // IONIC
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { IonicStorageModule } from '@ionic/storage';
@@ -42,7 +46,8 @@ import { GasStationApp } from './app.component';
     TransformDistancePipe,
     FilterPipe,
     RatingComponent,
-    IntroPage
+    IntroPage,
+    MomentPipe
   ],
   imports: [
     BrowserModule,
@@ -74,7 +79,11 @@ import { GasStationApp } from './app.component';
     PlaceService,
     Push,
     UserService,
+    MomentPipe,
     { provide: ErrorHandler, useClass: IonicErrorHandler }
+  ],
+  exports: [
+    MomentPipe
   ]
 })
 export class AppModule {}

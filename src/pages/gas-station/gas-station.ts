@@ -17,6 +17,8 @@ export class GasStationPage implements AfterViewInit {
 
   context: any;
 
+  countToDelete = 0;
+
   gasStation: any = {
     name: "POSTO"
   };
@@ -157,6 +159,21 @@ export class GasStationPage implements AfterViewInit {
     });
 
     alert.present();
+  }
+
+  countingToDelete() {
+    this.countToDelete++;
+
+    if (this.countToDelete == 4) {
+      this.gasStation.is_visible = false;
+      this.placeService
+        .updatePlace(this.gasStation, this.context)
+        .subscribe(() => {
+          this.countToDelete = 0;
+        }, (error) => {
+          console.warn(error);
+        });
+    }
   }
 
   closeGasStation() {

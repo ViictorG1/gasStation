@@ -13,7 +13,7 @@
     </ion-row>
     <ion-row [class.mb-20]="!editingPrice" class="text-center mt-10 p-10">
       <ion-col col-12>
-        <span class="title-gas title">{{ gasStation.name | uppercase }}</span><br/><br/>
+        <span (click)="countingToDelete(gasStation.id)" class="title-gas title">{{ gasStation.name | uppercase }}</span><br/><br/>
         <span class="location-gas">{{ gasStation.location }}</span>
       </ion-col>
     </ion-row>

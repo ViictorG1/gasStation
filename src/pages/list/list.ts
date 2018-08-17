@@ -221,7 +221,7 @@ export class ListPage {
     this.service.nearbySearch(params, this.processResults.bind(this), );
   }
 
-  processResults(results, status, pagination) {
+  processResults(results, status) {
     if (status !== "OK") {
       this.auxRaio = this.auxRaio + 500;
 
@@ -243,9 +243,7 @@ export class ListPage {
 
               if (foundedPlace) {
                 if (foundedPlace.is_visible) {
-                  // if (_.includes(place.name, 'Posto' || 'Station') && !_.includes(place.name, 'Borracharia' || 'Mecânica')) {
-                    this.calculateDistance(place, this.latlngUser, foundedPlace);
-                  // }
+                  this.calculateDistance(place, this.latlngUser, foundedPlace);
                 }
               } else {
                 let type = '';
@@ -260,7 +258,7 @@ export class ListPage {
                   type = 'UNDEFINED';
                 }
 
-                let createPlace = {
+                const createPlace = {
                   name: place.name,
                   google_place_id: place.place_id,
                   is_visible: true,
@@ -342,7 +340,6 @@ export class ListPage {
   }
 
   findAtLeastOne() {
-    // lat: -27.616596, lng: -48.390837
     let params = {
       location: { lat: this.latlngUser.lat, lng: this.latlngUser.lng },
       radius: this.auxRaio,
@@ -391,11 +388,11 @@ export class ListPage {
       id: foundedPlace.id,
       place_id: foundedPlace.google_place_id,
       values: foundedPlace.values || [
-        { type: 'GC', label: 'Gasolina comum', value: foundedPlace.prices ? foundedPlace.prices.find(x => x.short === 'GC').amount / 1000 : 1.000 },
-        { type: 'GA', label: 'Gasolina aditivada', value: foundedPlace.prices ? foundedPlace.prices.find(x => x.short === 'GA').amount / 1000 : 1.000 },
-        { type: 'DI', label: 'Diesel', value: foundedPlace.prices ? foundedPlace.prices.find(x => x.short === 'DI').amount / 1000 : 1.000 },
-        { type: 'ET', label: 'Etanol', value: foundedPlace.prices ? foundedPlace.prices.find(x => x.short === 'ET').amount / 1000 : 1.000 },
-        { type: 'GNV', label: 'Gás natural veicular', value: foundedPlace.prices ? foundedPlace.prices.find(x => x.short === 'GNV').amount / 1000 : 1.000 }
+        { type: 'GC', updatedAt: foundedPlace.updated_at, label: 'Gasolina comum', value: foundedPlace.prices ? foundedPlace.prices.find(x => x.short === 'GC').amount / 1000 : 1.000 },
+        { type: 'GA', updatedAt: foundedPlace.updated_at, label: 'Gasolina aditivada', value: foundedPlace.prices ? foundedPlace.prices.find(x => x.short === 'GA').amount / 1000 : 1.000 },
+        { type: 'DI', updatedAt: foundedPlace.updated_at, label: 'Diesel', value: foundedPlace.prices ? foundedPlace.prices.find(x => x.short === 'DI').amount / 1000 : 1.000 },
+        { type: 'ET', updatedAt: foundedPlace.updated_at, label: 'Etanol', value: foundedPlace.prices ? foundedPlace.prices.find(x => x.short === 'ET').amount / 1000 : 1.000 },
+        { type: 'GNV', updatedAt: foundedPlace.updated_at, label: 'Gás natural veicular', value: foundedPlace.prices ? foundedPlace.prices.find(x => x.short === 'GNV').amount / 1000 : 1.000 }
       ],
       name: foundedPlace.name || place.name,
       location: place.vicinity,

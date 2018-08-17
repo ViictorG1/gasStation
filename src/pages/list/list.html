@@ -39,68 +39,32 @@
   <ion-list>
     <ion-item ion-item *ngFor="let gasStation of gasStationsList" (click)="openGasStation(gasStation)">
       <ion-card class="card card-md">
-        <div classs="w-100">
+        <div class="w-100">
+            <div *ngIf="gasStation.flag==='Ipiranga'" class="ipiranga-2 flag-size w-50 pull-right"></div>
           <div *ngIf="gasStation.flag==='Ipiranga'" class="ipiranga-1 flag-size w-50 pull-right"></div>
-          <div *ngIf="gasStation.flag==='Ipiranga'" class="ipiranga-2 flag-size w-50 pull-right"></div>
-          <div *ngIf="gasStation.flag==='Shell'" class="shell-1 flag-size w-50 pull-right"></div>
           <div *ngIf="gasStation.flag==='Shell'" class="shell-2 flag-size w-50 pull-right"></div>
-          <div *ngIf="gasStation.flag==='BR'" class="br-1 flag-size w-50 pull-right"></div>
+          <div *ngIf="gasStation.flag==='Shell'" class="shell-1 flag-size w-50 pull-right"></div>
           <div *ngIf="gasStation.flag==='BR'" class="br-2 flag-size w-50 pull-right"></div>
-          <div *ngIf="gasStation.flag==='UNDEFINED'" class="undefined-color-1 flag-size w-50 pull-right"></div>
+          <div *ngIf="gasStation.flag==='BR'" class="br-1 flag-size w-50 pull-right"></div>
           <div *ngIf="gasStation.flag==='UNDEFINED'" class="undefined-color-2 flag-size w-50 pull-right"></div>
+          <div *ngIf="gasStation.flag==='UNDEFINED'" class="undefined-color-1 flag-size w-50 pull-right"></div>
         </div>
         <ion-card-content class="card-content card-content-md">
-          <ion-badge item-end="" class="pull-right distance badge badge-md">{{ gasStation.distance | transformDistance }}</ion-badge>
-          <ion-card-title class="cabin-font card-title card-title-md ellipsis w-80 title-list-gas">
+          <span class="pull-right distance">{{ gasStation.distance | transformDistance }}</span>
+          <ion-card-title class="cabin-font card-title card-title-md ellipsis w-85 title-list-gas">
             {{ gasStation?.name | uppercase }}
           </ion-card-title>
-          <p class="ellipsis w-85">{{ gasStation?.location }}</p>
+          <p class="ellipsis">{{ gasStation?.location }}</p>
         </ion-card-content>
-        <ion-item class="item item-block item-md">
+        <ion-item class="item item-block item-md value-container">
           <span class="cabin-font p-15 fuel-type-label">{{ fuelType.label }}</span>
-          <ion-badge item-end="" class="badge badge-md">R${{ (gasStation.values | filterBy:'type':fuelType.type).value }}</ion-badge>
+          <ion-badge item-end="" class="value-badge badge badge-md">R${{ (gasStation.values | filterBy:'type':fuelType.type).value }}</ion-badge><br/>
+          <span class="updated-at">
+            Valor atualizado em {{ (gasStation.values | filterBy:'type':fuelType.type).updatedAt | moment: 'DD/MM/YYYY HH:mm' }}
+          </span>
           <div class="button-effect"></div>
         </ion-item>
       </ion-card>
-      <!-- <table class="w-100">
-        <tr>
-          <td class="w-5 colors-gas">
-            <table class="w-80 h-100">
-              <tr *ngIf="gasStation.flag==='Ipiranga'" class="ipiranga-1 w-100 h-50"><td></td></tr>
-              <tr *ngIf="gasStation.flag==='Ipiranga'" class="ipiranga-2 w-100 h-50"><td></td></tr>
-              <tr *ngIf="gasStation.flag==='Shell'" class="shell-1 w-100 h-50"><td></td></tr>
-              <tr *ngIf="gasStation.flag==='Shell'" class="shell-2 w-100 h-50"><td></td></tr>
-              <tr *ngIf="gasStation.flag==='BR'" class="br-1 w-100 h-50"><td></td></tr>
-              <tr *ngIf="gasStation.flag==='BR'" class="br-2 w-100 h-50"><td></td></tr>
-              <tr *ngIf="gasStation.flag==='UNDEFINED'" class="undefined-color-1 w-100 h-50"><td></td></tr>
-              <tr *ngIf="gasStation.flag==='UNDEFINED'" class="undefined-color-2 w-100 h-50"><td></td></tr>
-            </table>
-          </td>
-          <td class="w-50 text-gas">
-            <h3><b>{{ (gasStation?.name ? ((gasStation.name.length > 25) ? ((gasStation?.name | slice:0:25) | uppercase)+'...' : (gasStation.name) | uppercase) : '') }}</b></h3>
-            <p>{{ (gasStation?.location ? (gasStation.location.length > 35) ? (gasStation?.location | slice:0:35)+'...' : (gasStation.location) : '') }}</p>
-          </td>
-          <td class="w-5 pr-5">
-            <table class="pull-right text-center">
-              <tr>
-                <td>
-                  <h2><b><span class="rs">R$ </span>{{ (gasStation.values | filterBy:'type':fuelType.type).value }} {{ (gasStation.values | filterBy:'type':fuelType.type).type }}</b></h2>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <div [hidden]="!loadingRoute" class="spinner">
-                    <div class="bounce1"></div>
-                    <div class="bounce2"></div>
-                    <div class="bounce3"></div>
-                  </div>
-                  <span>{{ gasStation.distance | transformDistance }}</span>
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-      </table> -->
     </ion-item>
   </ion-list>
 </ion-content>
