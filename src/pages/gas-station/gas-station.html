@@ -27,10 +27,12 @@
               {{ (gasStation.values | filterBy:'type':'GC').value }}
             </b>
           </span>
-          <ion-item *ngIf="editingPrice.type === 'gc'" class="input-price">
-            <ion-label color="primary" stacked>Atualizar valor</ion-label>
-            <ion-input type="text" placeholder="0.000" [brmasker]="{ mask:'0.000', len:5, type:'num' }" [(ngModel)]="editingPrice.newValue" (keyup.enter)="handleEnter()"></ion-input>
-          </ion-item>
+          <div *ngIf="editingPrice.type === 'gc'">
+            <span class="rs-placeholder">R$</span>
+            <ion-item class="input-price">
+              <ion-input class="ion-input-price" type="text" placeholder="0.000" [brmasker]="{ mask:'0.000', len:5, type:'num' }" [(ngModel)]="editingPrice.newValue" (keyup.enter)="handleEnter()"></ion-input>
+            </ion-item>
+          </div>
         </ion-col>
         <ion-col col-6 text-center>
           <span [class.adjust-label]="editingPrice.type === 'gc'" [hidden]="editingPrice.type === 'ga'" (click)="changeValue('ga', gasStation.values[1].value)" id="ga" class="price">
@@ -39,10 +41,12 @@
               {{ (gasStation.values | filterBy:'type':'GA').value }}
             </b>
           </span>
-          <ion-item *ngIf="editingPrice.type === 'ga'" class="input-price">
-            <ion-label color="primary" stacked>Atualizar valor</ion-label>
-            <ion-input type="text" placeholder="0.000" [brmasker]="{ mask:'0.000', len:5, type:'num' }" [(ngModel)]="editingPrice.newValue" (keyup.enter)="handleEnter()"></ion-input>
-          </ion-item>
+          <div *ngIf="editingPrice.type === 'ga'">
+            <span class="rs-placeholder">R$</span>
+            <ion-item class="input-price">
+              <ion-input class="ion-input-price" type="text" placeholder="0.000" [brmasker]="{ mask:'0.000', len:5, type:'num' }" [(ngModel)]="editingPrice.newValue" (keyup.enter)="handleEnter()"></ion-input>
+            </ion-item>
+          </div>
         </ion-col>
       </ion-row>
       <ion-row class="mb-20">
@@ -61,10 +65,12 @@
               {{ (gasStation.values | filterBy:'type':'ET').value }}
             </b>
           </span>
-          <ion-item *ngIf="editingPrice.type === 'et'" class="input-price">
-            <ion-label color="primary" stacked>Atualizar valor</ion-label>
-            <ion-input type="text" placeholder="0.000" [brmasker]="{ mask:'0.000', len:5, type:'num' }" [(ngModel)]="editingPrice.newValue" (keyup.enter)="handleEnter()"></ion-input>
-          </ion-item>
+          <div *ngIf="editingPrice.type === 'et'">
+            <span class="rs-placeholder">R$</span>
+            <ion-item class="input-price">
+              <ion-input class="ion-input-price" type="text" placeholder="0.000" [brmasker]="{ mask:'0.000', len:5, type:'num' }" [(ngModel)]="editingPrice.newValue" (keyup.enter)="handleEnter()"></ion-input>
+            </ion-item>
+          </div>
         </ion-col>
         <ion-col col-6 text-center>
           <span [class.adjust-label]="editingPrice.type === 'et'" [hidden]="editingPrice.type === 'di'" (click)="changeValue('di', gasStation.values[3].value)" id="et" class="price">
@@ -73,10 +79,12 @@
               {{ (gasStation.values | filterBy:'type':'DI').value }}
             </b>
           </span>
-          <ion-item *ngIf="editingPrice.type === 'di'" class="input-price">
-            <ion-label color="primary" stacked>Atualizar valor</ion-label>
-            <ion-input type="text" placeholder="0.000" [brmasker]="{ mask:'0.000', len:5, type:'num' }" [(ngModel)]="editingPrice.newValue" (keyup.enter)="handleEnter()"></ion-input>
-          </ion-item>
+          <div *ngIf="editingPrice.type === 'di'">
+            <span class="rs-placeholder">R$</span>
+            <ion-item class="input-price">
+              <ion-input type="text" placeholder="0.000" [brmasker]="{ mask:'0.000', len:5, type:'num' }" [(ngModel)]="editingPrice.newValue" (keyup.enter)="handleEnter()"></ion-input>
+            </ion-item>
+          </div>
         </ion-col>
       </ion-row>
       <ion-row>

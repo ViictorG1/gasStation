@@ -137,6 +137,7 @@ export class ListPage {
   }
 
   getCurrentLocation() {
+    console.log('getCurrentLocation')
     this.geolocation.getCurrentPosition({ enableHighAccuracy: true, timeout: 5000 }).then((resp) => {
       let latlngUser = new LatLng(resp.coords.latitude, resp.coords.longitude);
       this.latlngUser = latlngUser;

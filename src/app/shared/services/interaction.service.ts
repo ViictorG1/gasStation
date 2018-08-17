@@ -32,8 +32,4 @@ export class InteractionService extends RestClientService {
     return `${this.apiPath}/devices/${deviceId}/interactions`;
   }
 
-  private elementPath(deviceId: number, id: number): string {
-    return `${this.collectionPath(deviceId)}/${id}`;
-  }
-
 }

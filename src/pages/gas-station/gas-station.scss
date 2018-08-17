@@ -6,8 +6,32 @@
   font-size: 0.5em;
 }
 
+.rs-placeholder {
+  font-size: 1.5em;
+  font-weight: bold;
+  float: left;
+  position: absolute;
+  top: 17px;
+  left: 16px;
+  z-index: 1500;
+  color: #989898;
+}
+
 .input-price {
-  padding: 0px 10px !important;
+  padding: 0px 5px !important;
+  margin-left: 40px;
+  width: 65%;
+
+  .ion-input-price {
+    font-size: 1.7em;
+
+    .text-input-md {
+      margin: 0px;
+      padding-right: 0px;
+      font-weight: bold;
+      width: 100%;
+    }
+  }
 }
 
 .adjust-label {
@@ -16,10 +40,6 @@
   left: 0;
   bottom: 10px;
 }
-
-// .values {
-//   padding-top: 30px;
-// }
 
 ion-modal {
   ion-content {
